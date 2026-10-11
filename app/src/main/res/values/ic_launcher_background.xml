@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- docs/spec/brand.md BRAND-002, BRAND-051: the brand palette's background, shared with the
+         sibling apps and independent of DesignSystemColors. -->
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>

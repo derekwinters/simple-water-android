@@ -62,8 +62,8 @@ routines:
 #
 # `bot:` — the default `github-actions` identity.
 #
-# `commands.spec_validator` — docs/spec/ uses requirement IDs (GOAL-, LOG-,
-#   REM-, HIST-, SET-, UI-, BRAND-), but ai-sdlc's `lib.validators.specs` is
+# `commands.spec_validator` — docs/spec/ uses requirement IDs (APP-, GOAL-,
+#   LOG-, REM-, HIST-, UI-, DS-, BRAND-), but ai-sdlc's `lib.validators.specs` is
 #   internal to ai-sdlc, not shipped to consumers, and expects
 #   `# Specification — Thing (`AREA`)` page titles and Python tests. Pages here
 #   are titled plainly and the IDs are cited from Kotlin unit tests, so there

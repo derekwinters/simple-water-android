@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      DS-022 / UI-012: the app's one theme, declared on <application>. Compose draws every screen
+      (ScreenHeader is the only header), so the platform action bar is taken away here, written
+      out in the theme's own body rather than left to the parent's name. The parent is the dark
+      platform theme because DesignSystemColors.Default is unconditionally dark (DS-050) and :app
+      depends on neither AppCompat nor Material Components (DS-090).
+    -->
+    <style name="Theme.SimpleWater" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

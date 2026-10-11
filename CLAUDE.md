@@ -6,8 +6,8 @@ features and docs/spec/ for behaviour.
 
 ## Rules
 
-1. **Spec before code.** Behaviour lives in `docs/spec/` with requirement IDs (GOAL-, LOG-,
-   REM-, HIST-, SET-, UI-, BRAND-). Change the spec page first, then the code. Unit tests
+1. **Spec before code.** Behaviour lives in `docs/spec/` with requirement IDs (APP-, GOAL-,
+   LOG-, REM-, HIST-, UI-, DS-, BRAND-). Change the spec page first, then the code. Unit tests
    reference the IDs they cover in comments. Where a behaviour could be built
    technically-correct-but-wrong, the spec states a bold `**Invariant — …**` sentence; each spec
    page keeps a short "Build checklist".
@@ -41,6 +41,8 @@ features and docs/spec/ for behaviour.
   `app/build.gradle.kts`. Without them `release` is left unsigned, never debug-signed. The key
   must never change. `.github/scripts/verify_release_signature.py` gates every release-signed
   APK; its tests run with `python3 -m unittest discover -s .github/scripts/tests`.
+- Modules: `:core` (pure Kotlin/JVM logic and its unit tests), `:designsystem` (the ported design
+  system; the only module that depends on Material 3), `:app`.
 - Room schemas are exported to `app/schemas/`; commit changes to them with the entity change.
 
 @.ai-sdlc/house-rules.md
