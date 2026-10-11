@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- APP-001 -->
+    <string name="app_name">Simple Water</string>
+    <!-- REM-012: the channel reminders post to. -->
+    <string name="channel_name">Water reminders</string>
+    <string name="channel_description">Reminders to drink water until today\'s goal is met</string>
+</resources>

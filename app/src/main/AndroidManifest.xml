@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- REM-014, REM-016: reminder notifications (runtime permission on Android 13+). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- REM-008: re-arm the reminder alarm after a reboot. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- REM-007, REM-015: Android 12/12L, user-grantable exact alarm permission. -->
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32" />
+    <!-- REM-007: Android 13+, granted at install for reminder apps (sideloaded personal app). If it
+         is ever unavailable the scheduler falls back to inexact alarms. -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
+    <!-- DS-022: the theme declared here suppresses the platform action bar in its own body.
+         BRAND-052: the launcher icon is the adaptive icon under mipmap-anydpi-v26. -->
+    <application
+        android:name=".WaterApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SimpleWater">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- REM-016: only this app's own PendingIntents reach these two. -->
+        <receiver
+            android:name=".reminders.AlarmReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".reminders.NotificationActionReceiver"
+            android:exported="false" />
+
+        <!-- REM-008, REM-016: system broadcasts that require re-arming the alarm. -->
+        <receiver
+            android:name=".reminders.RescheduleReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

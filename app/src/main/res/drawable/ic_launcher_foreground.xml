@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The adaptive launcher icon's foreground (docs/spec/brand.md BRAND-010–011, BRAND-051), drawn
+     from docs/brand/icon-foreground.svg. Its colours are BRAND-002's fixed brand palette, shared
+     with the sibling apps and independent of DesignSystemColors; a colour here that drifts from
+     BRAND-002 fails LauncherIconColourTest. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- BRAND-010: the drop outline. -->
+    <path
+        android:pathData="M54,27 L68.86,53.74 A17,17 0 1,1 39.14,53.74 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF1361A7"
+        android:strokeWidth="6"
+        android:strokeLineJoin="round" />
+    <!-- BRAND-011: the water-level wave. -->
+    <path
+        android:pathData="M43,63 q2.75,-4 5.5,0 t5.5,0 t5.5,0 t5.5,0"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF818589"
+        android:strokeWidth="4"
+        android:strokeLineCap="round" />
+</vector>
