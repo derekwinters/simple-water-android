@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The adaptive launcher icon's foreground (docs/spec/brand.md BRAND-010–011, BRAND-051), drawn
-     from docs/brand/icon-foreground.svg. Its colours are BRAND-002's fixed brand palette, shared
-     with the sibling apps and independent of DesignSystemColors; a colour here that drifts from
-     BRAND-002 fails LauncherIconColourTest. -->
+<!-- The adaptive launcher icon's foreground (docs/spec/brand.md BRAND-012–013, BRAND-051), drawn
+     from docs/brand/icon-foreground.svg: an open cup, three-quarters full. Coordinates are
+     absolute and already scaled; no groups or relative commands. Its colours are BRAND-002's fixed
+     brand palette, shared with the sibling apps and independent of DesignSystemColors; a colour
+     here that drifts from BRAND-002 fails LauncherIconColourTest. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- BRAND-010: the drop outline. -->
+    <!-- BRAND-012: the water, drawn first so the cup covers its edges. -->
     <path
-        android:pathData="M54,27 L68.86,53.74 A17,17 0 1,1 39.14,53.74 Z"
-        android:fillColor="#00000000"
+        android:pathData="M41.736,45.6 Q44.802,43.08 47.868,45.6 Q50.934,48.12 54,45.6 Q57.066,43.08 60.132,45.6 Q63.198,48.12 66.264,45.6 L63.576,72.48 L44.424,72.48 Z"
+        android:fillColor="#FF1361A7"
         android:strokeColor="#FF1361A7"
-        android:strokeWidth="6"
+        android:strokeWidth="1.26"
         android:strokeLineJoin="round" />
-    <!-- BRAND-011: the water-level wave. -->
+    <!-- BRAND-013: the cup. -->
     <path
-        android:pathData="M43,63 q2.75,-4 5.5,0 t5.5,0 t5.5,0 t5.5,0"
+        android:pathData="M37.2,33.84 L41.064,73.32 Q41.4,76.68 44.76,76.68 L63.24,76.68 Q66.6,76.68 66.936,73.32 L70.8,33.84"
         android:fillColor="#00000000"
         android:strokeColor="#FF818589"
-        android:strokeWidth="4"
-        android:strokeLineCap="round" />
+        android:strokeWidth="4.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>

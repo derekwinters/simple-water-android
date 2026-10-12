@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The themed-icon layer for Android 13 and later (docs/spec/brand.md BRAND-030, BRAND-051):
-     the foreground's two elements in the same geometry, all white. Android reads only its alpha. -->
+<!-- The themed-icon layer for Android 13 and later (docs/spec/brand.md BRAND-030–031, BRAND-051):
+     the foreground's two elements with the same path data, all white. The water has no stroke, so
+     the gap between it and the cup stays visible in one colour. Android reads only its alpha. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- BRAND-010: the drop outline. -->
+    <!-- BRAND-012, BRAND-031: the water, fill only. -->
     <path
-        android:pathData="M54,27 L68.86,53.74 A17,17 0 1,1 39.14,53.74 Z"
+        android:pathData="M41.736,45.6 Q44.802,43.08 47.868,45.6 Q50.934,48.12 54,45.6 Q57.066,43.08 60.132,45.6 Q63.198,48.12 66.264,45.6 L63.576,72.48 L44.424,72.48 Z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- BRAND-013: the cup. -->
+    <path
+        android:pathData="M37.2,33.84 L41.064,73.32 Q41.4,76.68 44.76,76.68 L63.24,76.68 Q66.6,76.68 66.936,73.32 L70.8,33.84"
         android:fillColor="#00000000"
         android:strokeColor="#FFFFFFFF"
-        android:strokeWidth="6"
+        android:strokeWidth="4.2"
+        android:strokeLineCap="round"
         android:strokeLineJoin="round" />
-    <!-- BRAND-011: the water-level wave. -->
-    <path
-        android:pathData="M43,63 q2.75,-4 5.5,0 t5.5,0 t5.5,0 t5.5,0"
-        android:fillColor="#00000000"
-        android:strokeColor="#FFFFFFFF"
-        android:strokeWidth="4"
-        android:strokeLineCap="round" />
 </vector>

@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The reminder notification's status-bar icon (docs/spec/brand.md BRAND-055): a flat, single-alpha
-     water drop; the system supplies its colour. -->
+<!-- The reminder notification's status-bar icon (docs/spec/brand.md BRAND-055): the launcher
+     icon's cup and water as a flat, single-alpha silhouette; the system supplies its colour. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- The water, fill only. -->
     <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M12,2.5 L17.55,11.62 A6.5,6.5 0 1,1 6.45,11.62 Z" />
+        android:pathData="M6.16,7.4 Q7.62,6.2 9.08,7.4 Q10.54,8.6 12,7.4 Q13.46,6.2 14.92,7.4 Q16.38,8.6 17.84,7.4 L16.56,20.2 L7.44,20.2 Z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- The cup. -->
+    <path
+        android:pathData="M4,1.8 L5.84,20.6 Q6,22.2 7.6,22.2 L16.4,22.2 Q18,22.2 18.16,20.6 L20,1.8"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>
