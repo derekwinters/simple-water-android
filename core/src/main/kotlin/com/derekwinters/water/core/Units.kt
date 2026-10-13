@@ -41,6 +41,9 @@ object Units {
     /** The number part of [formatVolume], without the unit: "2,450". */
     fun formatNumber(ml: Int, unit: VolumeUnit): String = group(mlToDisplay(ml, unit))
 
+    /** GOAL-009: a value already in [unit]'s display units, e.g. 34 → "34 fl oz". */
+    fun formatDisplay(value: Int, unit: VolumeUnit): String = "${group(value)} ${unit.label}"
+
     fun kgToDisplay(kg: Double, unit: WeightUnit): Int = when (unit) {
         WeightUnit.KG -> kg.roundToInt()
         WeightUnit.LB -> (kg / KG_PER_LB).roundToInt()

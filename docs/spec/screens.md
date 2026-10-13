@@ -18,6 +18,12 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
   are none. The undo bar (LOG-008) sits in the layout's bottom slot.
 - **UI-004** The progress ring card shows today's total in `numeric.large` inside the ring, "of
   <goal>" below it, and "<remaining> to go" or "Goal met" under the ring.
+- **UI-013** The progress ring card adds a pace line (REM-017, REM-018) under the "to go" line,
+  in `AppText` `Meta`, e.g. "On pace: 1,000 ml by now · 250 ml behind" (or "· 200 ml ahead", or
+  "· right on track"). It shows only while now is strictly inside the reminder window (after the
+  start and before the end) and the goal is not met; it is hidden before the start, after the end,
+  once the goal is met, and when start equals end. It uses the window whether or not reminders are
+  switched on, and refreshes at least every 30 seconds while home is open.
 - **UI-005** **History** uses the list layout with a back action, header "History" (HIST-001–004).
 - **UI-006** **Settings** uses the list layout with a back action, header "Settings". Sections,
   each introduced by an `AppText` section label: **Goal** (Weight, Activity level, Daily goal,
@@ -45,3 +51,4 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
 - [x] `WaterNavHost` with routes first-run, home, history, settings, reminders (UI-001).
 - [x] Each screen's root is `ListLayout` or `FormLayout` (UI-002–008).
 - [x] `ManifestDeclarationTest` covers the theme declaration (UI-012).
+- [x] The home pace line comes from `PaceText.homeLine` in `:core`, unit tested (UI-013).

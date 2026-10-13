@@ -18,7 +18,9 @@ owner's other apps.
 - **Reminders you control.** On or off, which days, from and until when, and how often (every
   30, 60, 90 or 120 minutes). Reminders stop for the day once the goal is met. Each reminder shows
   your progress and has a "Log 250 ml" button (your first drink size) so you can log without
-  opening the app. Reminders survive reboots and clock or time-zone changes, and use exact alarms
+  opening the app. After the first reminder of the day, each one also says how much you would
+  ideally have had by now to stay on pace, and how far behind or ahead you are; the home screen
+  shows the same while you are inside the reminder window. Reminders survive reboots and clock or time-zone changes, and use exact alarms
   when Android allows them.
 - **ml or fl oz.** Everything is shown and entered in the unit you choose.
 - **History.** A week at a time: each day's total against the goal that applied that day, how

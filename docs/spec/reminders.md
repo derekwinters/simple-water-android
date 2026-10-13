@@ -43,9 +43,31 @@
   today · 1,200 ml to go", and has one action, **"Log <default size>"** (e.g. "Log 250 ml"), which
   logs the default size (LOG-004) without opening the app and dismisses the notification. Tapping
   the notification opens the app on the home screen and dismisses it. Each reminder replaces the
-  previous one (one notification id), so they never pile up.
+  previous one (one notification id), so they never pile up. Reminders after the start-time slot
+  lead with a pace sentence instead (REM-019).
 - **REM-013** The notification is dismissed when a log (from the app or the action) brings
   today's total to the goal or above (LOG-011).
+
+## Pace
+
+- **REM-017** The **expected amount by now** ramps linearly across the reminder window (REM-001):
+  `goal × (now − start) / (end − start)`, clamped to 0…goal, where now, start and end are times of
+  day. Before the start it is 0, after the end it is the goal. With start equal to end there is no
+  ramp and no pace at all (REM-019, UI-013 show nothing). **Invariant — the expected amount never
+  exceeds the goal and never goes negative**, whatever the time of day.
+- **REM-018** The **difference** is today's total minus the (unrounded) expected amount. The
+  expected amount and the difference are each rounded in the volume unit (GOAL-008): to the
+  nearest 10 ml, or to the nearest whole fl oz, with an exact half rounding away from zero. A
+  negative difference reads "<amount> behind", a positive one "<amount> ahead", and one that rounds
+  to 0 reads "right on track".
+- **REM-019** A reminder's pace is taken at the occurrence's scheduled time (not its delivery
+  time, so an inexact alarm delivered late still treats the start slot as the start). When the
+  expected amount rounds to 0 (the start-time slot) or start equals end, the notification keeps
+  the plain text of REM-012. Every later reminder that is shown (REM-010 still applies) reads, e.g.,
+  "Ideally you'd have had 1,000 ml by now to stay on track. You're 250 ml behind." (or "You're
+  200 ml ahead.", or "You're right on track."), and its expanded text adds the REM-012 totals line
+  ("1,250 of 2,450 ml today · 1,200 ml to go") on the next line. Title and the Log action are
+  unchanged.
 
 ## Permissions
 
@@ -68,4 +90,7 @@
       a reschedule can keep a just-due occurrence (REM-009) and delivery can de-duplicate (REM-010).
 - [x] All `PendingIntent`s are `FLAG_IMMUTABLE`.
 - [x] `ManifestDeclarationTest` (JVM, reads the manifest) covers REM-016.
+- [x] `Pace.at` and `PaceText` in `:core`, unit tested: clamping, start = end, rounding in both
+      units, the "on track" case (REM-017–019, UI-013).
+- [x] The alarm receiver passes the occurrence's scheduled time to the notification (REM-019).
 - [ ] Robolectric test for notification content (not yet).

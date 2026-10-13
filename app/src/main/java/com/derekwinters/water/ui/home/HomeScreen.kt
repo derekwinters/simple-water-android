@@ -36,6 +36,7 @@ import com.derekwinters.water.WaterApp
 import com.derekwinters.water.core.EntryRules
 import com.derekwinters.water.core.GoalMath
 import com.derekwinters.water.core.History
+import com.derekwinters.water.core.PaceText
 import com.derekwinters.water.core.Units
 import com.derekwinters.water.core.VolumeUnit
 import com.derekwinters.water.core.WeekSummary
@@ -55,7 +56,9 @@ import com.derekwinters.water.designsystem.StatusIconButton
 import com.derekwinters.water.designsystem.TextRole
 import com.derekwinters.water.designsystem.UndoBar
 import com.derekwinters.water.ui.formatTime
+import com.derekwinters.water.ui.rememberNow
 import com.derekwinters.water.ui.rememberToday
+import java.time.LocalTime
 import java.time.ZoneId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -73,6 +76,7 @@ fun HomeRoute(
     val current = settings.value
     val context = LocalContext.current
     val today by rememberToday()
+    val now by rememberNow()
     val zone = remember(today) { ZoneId.systemDefault() }
     val repository = app.repository
 
@@ -114,6 +118,7 @@ fun HomeRoute(
 
     HomeScreen(
         settings = current,
+        now = now,
         entries = entries,
         week = week,
         removed = removed,
@@ -137,6 +142,7 @@ fun HomeRoute(
 @Composable
 fun HomeScreen(
     settings: UserSettings,
+    now: LocalTime,
     entries: List<DrinkEntry>,
     week: WeekSummary,
     removed: DrinkEntry?,
@@ -174,7 +180,12 @@ fun HomeScreen(
         },
     ) {
         item {
-            ProgressCard(totalMl = total, goalMl = settings.goalMl, unit = unit)
+            ProgressCard(
+                totalMl = total,
+                goalMl = settings.goalMl,
+                unit = unit,
+                paceLine = PaceText.homeLine(now, total, settings.goalMl, settings.reminders, unit),
+            )
         }
         item {
             QuickAddRow(
@@ -237,9 +248,9 @@ fun HomeScreen(
     }
 }
 
-/** LOG-003, UI-004. */
+/** LOG-003, UI-004; UI-013: [paceLine] under the "to go" line when there is one. */
 @Composable
-private fun ProgressCard(totalMl: Int, goalMl: Int, unit: VolumeUnit) {
+private fun ProgressCard(totalMl: Int, goalMl: Int, unit: VolumeUnit, paceLine: String?) {
     val colors = AppTheme.colors
     val spacing = AppTheme.spacing
     val remaining = GoalMath.remainingMl(totalMl, goalMl)
@@ -263,6 +274,9 @@ private fun ProgressCard(totalMl: Int, goalMl: Int, unit: VolumeUnit) {
             AppText(text = "Goal met", role = TextRole.BodyStrong, color = colors.work)
         } else {
             AppText(text = "${Units.formatVolume(remaining, unit)} to go", role = TextRole.Body)
+        }
+        if (paceLine != null) {
+            AppText(text = paceLine, role = TextRole.Meta)
         }
     }
 }
@@ -353,6 +367,7 @@ private fun HomeScreenPreview() {
     AppTheme {
         HomeScreen(
             settings = UserSettings(onboarded = true),
+            now = LocalTime.of(13, 0),
             entries = entries,
             week = WeekSummary(emptyList()),
             removed = null,

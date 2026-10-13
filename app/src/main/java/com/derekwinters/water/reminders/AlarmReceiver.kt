@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import com.derekwinters.water.WaterApp
 import com.derekwinters.water.core.DayWindow
+import com.derekwinters.water.core.PaceText
 import com.derekwinters.water.core.ReminderPolicy
+import java.time.Instant
 import java.time.ZoneId
 import kotlinx.coroutines.launch
 
@@ -50,7 +52,16 @@ class AlarmReceiver : BroadcastReceiver() {
             goalMl = settings.goalMl,
         )
         if (show) {
-            Notifications.showReminder(app, total, settings.goalMl, settings.volumeUnit, settings.defaultSizeMl)
+            // REM-019: pace is taken at the occurrence's scheduled time, not its delivery time.
+            val slot = Instant.ofEpochMilli(triggerAt).atZone(zone).toLocalTime()
+            Notifications.showReminder(
+                context = app,
+                totalMl = total,
+                goalMl = settings.goalMl,
+                unit = settings.volumeUnit,
+                defaultSizeMl = settings.defaultSizeMl,
+                paceText = PaceText.notificationBody(slot, total, settings.goalMl, settings.reminders, settings.volumeUnit),
+            )
         }
     }
 

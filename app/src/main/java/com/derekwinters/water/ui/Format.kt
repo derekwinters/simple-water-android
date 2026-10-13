@@ -41,3 +41,12 @@ fun rememberToday(): State<LocalDate> = produceState(initialValue = LocalDate.no
         if (now != value) value = now
     }
 }
+
+/** UI-013: the local time of day, re-read every 30 seconds so the home pace line keeps up. */
+@Composable
+fun rememberNow(): State<LocalTime> = produceState(initialValue = LocalTime.now()) {
+    while (true) {
+        delay(30_000)
+        value = LocalTime.now()
+    }
+}

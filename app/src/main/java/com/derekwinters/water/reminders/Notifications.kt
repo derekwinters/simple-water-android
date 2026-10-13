@@ -47,8 +47,19 @@ object Notifications {
         return NotificationManagerCompat.from(context).areNotificationsEnabled()
     }
 
-    /** REM-012: progress text, a "Log <default size>" action, and a tap that opens the app. */
-    fun showReminder(context: Context, totalMl: Int, goalMl: Int, unit: VolumeUnit, defaultSizeMl: Int) {
+    /**
+     * REM-012: progress text, a "Log <default size>" action, and a tap that opens the app.
+     * REM-019: with a [paceText] the collapsed text is the pace sentence and the expanded text adds
+     * the totals line beneath it; without one the totals line is the whole text, as before.
+     */
+    fun showReminder(
+        context: Context,
+        totalMl: Int,
+        goalMl: Int,
+        unit: VolumeUnit,
+        defaultSizeMl: Int,
+        paceText: String? = null,
+    ) {
         if (!canPost(context)) return
         val open = PendingIntent.getActivity(
             context,
@@ -66,12 +77,14 @@ object Notifications {
                 .putExtra(NotificationActionReceiver.EXTRA_AMOUNT_ML, defaultSizeMl),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        val body = ReminderText.body(totalMl, goalMl, unit)
+        val totals = ReminderText.body(totalMl, goalMl, unit)
+        val collapsed = paceText ?: totals
+        val expanded = if (paceText == null) totals else "$paceText\n$totals"
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(ReminderText.TITLE)
-            .setContentText(body)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            .setContentText(collapsed)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(expanded))
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setAutoCancel(true)
             .setContentIntent(open)

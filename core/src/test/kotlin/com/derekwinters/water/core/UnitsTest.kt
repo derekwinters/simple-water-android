@@ -42,4 +42,11 @@ class UnitsTest {
         assertEquals("70 kg", Units.formatWeight(70.0, WeightUnit.KG))
         assertEquals("154 lb", Units.formatWeight(70.0, WeightUnit.LB))
     }
+
+    // GOAL-009: a value already in display units, formatted with its unit.
+    @Test
+    fun formatDisplay() {
+        assertEquals("1,000 ml", Units.formatDisplay(1000, VolumeUnit.ML))
+        assertEquals("34 fl oz", Units.formatDisplay(34, VolumeUnit.FL_OZ))
+    }
 }
