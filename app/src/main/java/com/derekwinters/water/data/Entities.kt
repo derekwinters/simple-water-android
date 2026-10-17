@@ -6,11 +6,11 @@ import androidx.room.PrimaryKey
 import com.derekwinters.water.core.GoalRecord
 import com.derekwinters.water.core.LoggedAmount
 
-/** LOG-001: one drink, in whole ml, and the instant it was logged (epoch millis). */
+/** LOG-001: one drink, in decimal ml (GOAL-008), and the instant it was logged (epoch millis). */
 @Entity(tableName = "drink_entries", indices = [Index(value = ["loggedAt"])])
 data class DrinkEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val amountMl: Int,
+    val amountMl: Double,
     val loggedAt: Long,
 ) {
     fun toLoggedAmount(): LoggedAmount = LoggedAmount(loggedAtMillis = loggedAt, amountMl = amountMl)

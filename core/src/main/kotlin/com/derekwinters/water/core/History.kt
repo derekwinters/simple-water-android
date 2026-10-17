@@ -2,24 +2,23 @@ package com.derekwinters.water.core
 
 import java.time.LocalDate
 import java.time.ZoneId
-import kotlin.math.roundToInt
 
 /** GOAL-012: the effective goal recorded against a date. */
 data class GoalRecord(val epochDay: Long, val goalMl: Int)
 
 /** A logged amount, as history needs it. */
-data class LoggedAmount(val loggedAtMillis: Long, val amountMl: Int)
+data class LoggedAmount(val loggedAtMillis: Long, val amountMl: Double)
 
-/** HIST-003: one day of the week view. */
-data class DaySummary(val date: LocalDate, val totalMl: Int, val goalMl: Int) {
+/** HIST-003: one day of the week view. [totalMl] is unrounded decimal ml (GOAL-008). */
+data class DaySummary(val date: LocalDate, val totalMl: Double, val goalMl: Int) {
     val met: Boolean get() = totalMl >= goalMl
     val fraction: Float get() = GoalMath.fraction(totalMl, goalMl)
 }
 
-/** HIST-004: seven days, how many met their goal, and the average daily total. */
+/** HIST-004: seven days, how many met their goal, and the average daily total (unrounded). */
 data class WeekSummary(val days: List<DaySummary>) {
     val metCount: Int get() = days.count { it.met }
-    val averageMl: Int get() = if (days.isEmpty()) 0 else (days.sumOf { it.totalMl }.toDouble() / days.size).roundToInt()
+    val averageMl: Double get() = if (days.isEmpty()) 0.0 else days.sumOf { it.totalMl } / days.size
 }
 
 /** The week view (docs/spec/history.md). */
@@ -41,20 +40,20 @@ object History {
     fun week(
         endDate: LocalDate,
         today: LocalDate,
-        totals: Map<LocalDate, Int>,
+        totals: Map<LocalDate, Double>,
         records: List<GoalRecord>,
         currentGoalMl: Int,
     ): WeekSummary {
         val end = if (endDate.isAfter(today)) today else endDate
         val days = (DAYS - 1 downTo 0).map { back ->
             val date = end.minusDays(back.toLong())
-            DaySummary(date, totals[date] ?: 0, goalOn(date, records, currentGoalMl))
+            DaySummary(date, totals[date] ?: 0.0, goalOn(date, records, currentGoalMl))
         }
         return WeekSummary(days)
     }
 
-    /** LOG-002: totals per local date. */
-    fun totalsByDay(entries: List<LoggedAmount>, zone: ZoneId): Map<LocalDate, Int> =
+    /** LOG-002: totals per local date, summed unrounded (GOAL-008 invariant). */
+    fun totalsByDay(entries: List<LoggedAmount>, zone: ZoneId): Map<LocalDate, Double> =
         entries.groupBy { DayWindow.dateOf(it.loggedAtMillis, zone) }
             .mapValues { (_, list) -> list.sumOf { it.amountMl } }
 

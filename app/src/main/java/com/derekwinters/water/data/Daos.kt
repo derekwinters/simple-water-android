@@ -13,9 +13,9 @@ interface DrinkEntryDao {
     @Query("SELECT * FROM drink_entries WHERE loggedAt >= :start AND loggedAt < :end ORDER BY loggedAt DESC, id DESC")
     fun observeBetween(start: Long, end: Long): Flow<List<DrinkEntry>>
 
-    /** LOG-003: the total of entries in `[start, end)`. */
-    @Query("SELECT COALESCE(SUM(amountMl), 0) FROM drink_entries WHERE loggedAt >= :start AND loggedAt < :end")
-    suspend fun totalBetween(start: Long, end: Long): Int
+    /** LOG-003: the unrounded total of entries in `[start, end)` (GOAL-008 invariant). */
+    @Query("SELECT COALESCE(SUM(amountMl), 0.0) FROM drink_entries WHERE loggedAt >= :start AND loggedAt < :end")
+    suspend fun totalBetween(start: Long, end: Long): Double
 
     /** REPLACE so LOG-008's undo can re-insert a deleted row with its original id. */
     @Insert(onConflict = OnConflictStrategy.REPLACE)

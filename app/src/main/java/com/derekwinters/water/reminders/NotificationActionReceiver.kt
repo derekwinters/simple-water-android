@@ -12,7 +12,9 @@ class NotificationActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != ACTION_LOG) return
         Notifications.cancelReminder(context)
-        val amount = intent.getIntExtra(EXTRA_AMOUNT_ML, 0)
+        // Decimal ml (GOAL-008); a notification posted before the upgrade still carries an Int.
+        @Suppress("DEPRECATION")
+        val amount = (intent.extras?.get(EXTRA_AMOUNT_ML) as? Number)?.toDouble() ?: return
         if (!EntryRules.isValid(amount)) return
         val app = context.applicationContext as WaterApp
         val pending = goAsync()

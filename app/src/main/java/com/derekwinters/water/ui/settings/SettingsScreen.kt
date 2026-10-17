@@ -159,7 +159,7 @@ fun SettingsScreen(
             // LOG-009.
             StockListItem(
                 headline = "Quick-add sizes",
-                supportingText = settings.drinkSizes.joinToString(", ") { Units.formatVolume(it, unit) },
+                supportingText = settings.quickAddSizesMl.joinToString(", ") { Units.formatVolume(it, unit) },
                 modifier = rowModifier.clickable { editor = Editor.Sizes },
             )
         }
@@ -347,10 +347,10 @@ private fun GoalDialog(settings: UserSettings, onSave: (Int) -> Unit, onDismiss:
 
 /** LOG-004, LOG-009, UI-007: up to four sizes; blanks are dropped. */
 @Composable
-private fun SizesDialog(settings: UserSettings, onSave: (List<Int>) -> Unit, onDismiss: () -> Unit) {
+private fun SizesDialog(settings: UserSettings, onSave: (List<Double>) -> Unit, onDismiss: () -> Unit) {
     val unit = settings.volumeUnit
     val initial = List(DrinkSizes.MAX_COUNT) { index ->
-        settings.drinkSizes.getOrNull(index)?.let { Units.mlToDisplay(it, unit).toString() } ?: ""
+        DrinkSizes.forUnit(settings.drinkSizes, unit).getOrNull(index)?.let { Units.mlToDisplay(it, unit).toString() } ?: ""
     }
     var first by rememberSaveable { mutableStateOf(initial[0]) }
     var second by rememberSaveable { mutableStateOf(initial[1]) }

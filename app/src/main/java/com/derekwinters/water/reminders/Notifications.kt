@@ -48,7 +48,7 @@ object Notifications {
     }
 
     /** REM-012: progress text, a "Log <default size>" action, and a tap that opens the app. */
-    fun showReminder(context: Context, totalMl: Int, goalMl: Int, unit: VolumeUnit, defaultSizeMl: Int) {
+    fun showReminder(context: Context, totalMl: Double, goalMl: Int, unit: VolumeUnit, defaultSizeMl: Double) {
         if (!canPost(context)) return
         val open = PendingIntent.getActivity(
             context,
