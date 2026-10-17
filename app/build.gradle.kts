@@ -155,10 +155,11 @@ dependencies {
 // TEMPORARY (removed before review): print the exported Room schemas into the CI log, because
 // the CI artifact cannot be fetched from the environment this change was written in.
 fun dumpRoomSchemas() {
-    (fileTree(layout.buildDirectory) { include("**/AppDatabase/*.json") } + fileTree("schemas"))
+    (fileTree(layout.buildDirectory) { include("**/*AppDatabase/*.json") } + fileTree("schemas"))
         .forEach { println("ROOM-SCHEMA-DUMP-BEGIN $it\n${it.readText()}\nROOM-SCHEMA-DUMP-END") }
 }
 tasks.configureEach {
     if (name == "kspDebugKotlin") doLast { dumpRoomSchemas() }
     if (name == "compileDebugUnitTestKotlin") doFirst { dumpRoomSchemas() }
+    if (name == "copyRoomSchemas") doLast { dumpRoomSchemas() }
 }
