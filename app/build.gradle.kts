@@ -83,6 +83,13 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // LOG-012: the Room migration test runs on the JVM under Robolectric.
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 kotlin {
@@ -142,4 +149,5 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
 }

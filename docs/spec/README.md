@@ -7,7 +7,7 @@ tests reference these IDs. Change the spec before the code.
 | --- | --- | --- |
 | [product.md](product.md) | APP-001 … APP-006 | Name, identifiers, platform, toolchain, versioning |
 | [goal.md](goal.md) | GOAL-001 … GOAL-012 | Profile (weight, activity), recommended goal, custom goal, units, first run |
-| [logging.md](logging.md) | LOG-001 … LOG-011 | Logging drinks, quick-add sizes, today's total, delete and undo, day boundary |
+| [logging.md](logging.md) | LOG-001 … LOG-012 | Logging drinks, quick-add sizes, today's total, delete and undo, day boundary |
 | [reminders.md](reminders.md) | REM-001 … REM-016 | Reminder settings, alarm scheduling, notification, permissions |
 | [history.md](history.md) | HIST-001 … HIST-006 | Week view of daily totals against the goal |
 | [screens.md](screens.md) | UI-001 … UI-012 | Screens, navigation, and which layout each uses |

@@ -141,7 +141,7 @@ fun HomeScreen(
     week: WeekSummary,
     removed: DrinkEntry?,
     timeOf: (DrinkEntry) -> String,
-    onAdd: (Int) -> Unit,
+    onAdd: (Double) -> Unit,
     onDelete: (DrinkEntry) -> Unit,
     onUndo: () -> Unit,
     onOpenSettings: () -> Unit,
@@ -150,6 +150,7 @@ fun HomeScreen(
 ) {
     val spacing = AppTheme.spacing
     val unit = settings.volumeUnit
+    // GOAL-008 invariant: the total is summed unrounded and rounded once, when shown.
     val total = entries.sumOf { it.amountMl }
     var customOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -178,7 +179,7 @@ fun HomeScreen(
         }
         item {
             QuickAddRow(
-                sizes = settings.drinkSizes,
+                sizes = settings.quickAddSizesMl,
                 unit = unit,
                 onAdd = onAdd,
                 onCustom = { customOpen = true },
@@ -239,7 +240,7 @@ fun HomeScreen(
 
 /** LOG-003, UI-004. */
 @Composable
-private fun ProgressCard(totalMl: Int, goalMl: Int, unit: VolumeUnit) {
+private fun ProgressCard(totalMl: Double, goalMl: Int, unit: VolumeUnit) {
     val colors = AppTheme.colors
     val spacing = AppTheme.spacing
     val remaining = GoalMath.remainingMl(totalMl, goalMl)
@@ -259,7 +260,7 @@ private fun ProgressCard(totalMl: Int, goalMl: Int, unit: VolumeUnit) {
                 AppText(text = "of ${Units.formatVolume(goalMl, unit)}", role = TextRole.Meta)
             }
         }
-        if (remaining == 0) {
+        if (remaining == 0.0) {
             AppText(text = "Goal met", role = TextRole.BodyStrong, color = colors.work)
         } else {
             AppText(text = "${Units.formatVolume(remaining, unit)} to go", role = TextRole.Body)
@@ -267,9 +268,12 @@ private fun ProgressCard(totalMl: Int, goalMl: Int, unit: VolumeUnit) {
     }
 }
 
-/** LOG-004, LOG-005: the default size is the screen's single primary action (DS-001). */
+/**
+ * LOG-004, LOG-005: the default size is the screen's single primary action (DS-001). [sizes] are
+ * the amounts each button logs, already snapped to what its label shows (LOG-005 invariant).
+ */
 @Composable
-private fun QuickAddRow(sizes: List<Int>, unit: VolumeUnit, onAdd: (Int) -> Unit, onCustom: () -> Unit) {
+private fun QuickAddRow(sizes: List<Double>, unit: VolumeUnit, onAdd: (Double) -> Unit, onCustom: () -> Unit) {
     val spacing = AppTheme.spacing
     Column(
         modifier = Modifier
@@ -322,7 +326,7 @@ private fun EntryRow(time: String, amount: String, onDelete: () -> Unit) {
 
 /** LOG-006. */
 @Composable
-private fun CustomAmountDialog(unit: VolumeUnit, onAdd: (Int) -> Unit, onDismiss: () -> Unit) {
+private fun CustomAmountDialog(unit: VolumeUnit, onAdd: (Double) -> Unit, onDismiss: () -> Unit) {
     var text by rememberSaveable { mutableStateOf("") }
     val amount = EntryRules.amountFromInput(text, unit)
     AlertDialog(
@@ -347,8 +351,8 @@ private fun CustomAmountDialog(unit: VolumeUnit, onAdd: (Int) -> Unit, onDismiss
 @Composable
 private fun HomeScreenPreview() {
     val entries = listOf(
-        DrinkEntry(id = 2, amountMl = 500, loggedAt = 0L),
-        DrinkEntry(id = 1, amountMl = 250, loggedAt = 0L),
+        DrinkEntry(id = 2, amountMl = 500.0, loggedAt = 0L),
+        DrinkEntry(id = 1, amountMl = 250.0, loggedAt = 0L),
     )
     AppTheme {
         HomeScreen(

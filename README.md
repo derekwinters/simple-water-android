@@ -12,7 +12,7 @@ owner's other apps.
   70 kg and sedentary is 2,450 ml. Skip it and you start from 70 kg, sedentary. You can set your
   own goal in settings and go back to the recommendation at any time.
 - **One-tap logging.** The home screen shows today's total against the goal as a ring, with
-  quick-add buttons for your drink sizes (250 ml and 500 ml to start; up to four, set in settings)
+  quick-add buttons for your drink sizes (250 ml and 500 ml to start, or 8 and 16 fl oz; up to four, set in settings)
   and a custom amount. Today's drinks are listed underneath; delete one by mistake and "Undo"
   brings it back. The day starts at local midnight.
 - **Reminders you control.** On or off, which days, from and until when, and how often (every

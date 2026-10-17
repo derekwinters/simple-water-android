@@ -177,7 +177,7 @@ private fun HistoryScreenPreview() {
     val week = History.week(
         endDate = end,
         today = end,
-        totals = mapOf(end to 2450, end.minusDays(1) to 1200, end.minusDays(3) to 3000),
+        totals = mapOf(end to 2450.0, end.minusDays(1) to 1200.0, end.minusDays(3) to 3000.0),
         records = emptyList(),
         currentGoalMl = 2450,
     )

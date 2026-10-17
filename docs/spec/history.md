@@ -12,7 +12,8 @@ Deliberately modest: one week at a time.
 - **HIST-003** Each day is drawn as a horizontal bar filled in proportion to total ÷ goal (capped
   at full), with the weekday and date, the total, and a "met" mark when total ≥ goal.
 - **HIST-004** Above the days: how many of the seven days met their goal ("4 of 7 days met") and
-  the average daily total over the seven days.
+  the average daily total over the seven days. Daily totals and the average are computed in
+  decimal ml and rounded only for display (GOAL-008 invariant).
 - **HIST-005** Days after today are never shown (the window never extends past today).
 - **HIST-006** **Invariant — a day's goal comes from the goal history, never from the current
   goal**, so changing the goal today does not turn last week's met days into misses.

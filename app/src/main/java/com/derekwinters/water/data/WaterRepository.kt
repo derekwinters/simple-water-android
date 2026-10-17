@@ -29,14 +29,14 @@ class WaterRepository(
     fun entriesOn(date: LocalDate, zone: ZoneId): Flow<List<DrinkEntry>> = entriesBetween(date, date, zone)
 
     /** LOG-003. */
-    suspend fun totalOn(date: LocalDate, zone: ZoneId): Int =
+    suspend fun totalOn(date: LocalDate, zone: ZoneId): Double =
         entries.totalBetween(DayWindow.startMillis(date, zone), DayWindow.endMillis(date, zone))
 
     /** GOAL-012. */
     val goalRecords: Flow<List<GoalRecord>> = goals.observeAll().map { list -> list.map { it.toGoalRecord() } }
 
     /** LOG-005, LOG-006: logs [amountMl] now. LOG-011: dismisses the reminder once the goal is met. */
-    suspend fun addEntry(amountMl: Int, atMillis: Long = System.currentTimeMillis()) {
+    suspend fun addEntry(amountMl: Double, atMillis: Long = System.currentTimeMillis()) {
         entries.insert(DrinkEntry(amountMl = amountMl, loggedAt = atMillis))
         dismissReminderIfGoalMet()
     }

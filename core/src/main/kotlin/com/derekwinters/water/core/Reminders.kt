@@ -88,7 +88,7 @@ object ReminderPolicy {
         enabled: Boolean,
         dayActive: Boolean,
         lateByMillis: Long,
-        totalMl: Int,
+        totalMl: Double,
         goalMl: Int,
     ): Boolean = !alreadyHandled &&
         enabled &&
@@ -101,9 +101,9 @@ object ReminderPolicy {
 object ReminderText {
     const val TITLE = "Time for some water"
 
-    fun body(totalMl: Int, goalMl: Int, unit: VolumeUnit): String =
+    fun body(totalMl: Double, goalMl: Int, unit: VolumeUnit): String =
         "${Units.formatNumber(totalMl, unit)} of ${Units.formatVolume(goalMl, unit)} today · " +
             "${Units.formatVolume(GoalMath.remainingMl(totalMl, goalMl), unit)} to go"
 
-    fun logAction(ml: Int, unit: VolumeUnit): String = "Log ${Units.formatVolume(ml, unit)}"
+    fun logAction(ml: Double, unit: VolumeUnit): String = "Log ${Units.formatVolume(ml, unit)}"
 }

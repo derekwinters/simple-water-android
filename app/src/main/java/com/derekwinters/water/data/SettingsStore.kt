@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-/** Everything the user configures. Volumes are ml, weight is kg. */
+/** Everything the user configures. Drink sizes are decimal ml, goals whole ml, weight is kg. */
 data class UserSettings(
     /** GOAL-010: true once first run has been completed or skipped. */
     val onboarded: Boolean = false,
@@ -31,7 +31,8 @@ data class UserSettings(
     /** GOAL-006: null when the recommendation is in use. */
     val customGoalMl: Int? = null,
     val volumeUnit: VolumeUnit = VolumeUnit.ML,
-    val drinkSizes: List<Int> = DrinkSizes.DEFAULT,
+    /** LOG-004: as stored; [DrinkSizes.DEFAULT] means not customised. */
+    val drinkSizes: List<Double> = DrinkSizes.DEFAULT,
     val reminders: ReminderSettings = ReminderSettings.DEFAULT,
 ) {
     /** GOAL-004, GOAL-005: computed, never stored. */
@@ -40,8 +41,12 @@ data class UserSettings(
     /** GOAL-007. */
     val goalMl: Int get() = GoalMath.effectiveGoalMl(profile, customGoalMl)
 
-    /** LOG-004: the first quick-add size. */
-    val defaultSizeMl: Int get() = drinkSizes.firstOrNull() ?: DrinkSizes.DEFAULT.first()
+    /** LOG-004, LOG-005: what each quick-add button logs in the current unit, as its label shows. */
+    val quickAddSizesMl: List<Double> get() = DrinkSizes.quickAdd(drinkSizes, volumeUnit)
+
+    /** LOG-004: what the first quick-add size logs (also the notification's action, REM-012). */
+    val defaultSizeMl: Double
+        get() = quickAddSizesMl.firstOrNull() ?: DrinkSizes.quickAdd(DrinkSizes.DEFAULT, volumeUnit).first()
 }
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")

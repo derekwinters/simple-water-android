@@ -106,7 +106,7 @@ class ReminderScheduleTest {
             lateMillis: Long = 0,
             total: Int = 1000,
             goal: Int = 2450,
-        ) = ReminderPolicy.shouldNotify(handled, enabled, dayActive, lateMillis, total, goal)
+        ) = ReminderPolicy.shouldNotify(handled, enabled, dayActive, lateMillis, total.toDouble(), goal)
 
         assertTrue(notify())
         assertFalse(notify(handled = true))
@@ -123,9 +123,13 @@ class ReminderScheduleTest {
     @Test
     fun notificationText() {
         assertEquals("Time for some water", ReminderText.TITLE)
-        assertEquals("1,250 of 2,450 ml today · 1,200 ml to go", ReminderText.body(1250, 2450, VolumeUnit.ML))
-        assertEquals("0 of 83 fl oz today · 83 fl oz to go", ReminderText.body(0, 2450, VolumeUnit.FL_OZ))
-        assertEquals("Log 250 ml", ReminderText.logAction(250, VolumeUnit.ML))
-        assertEquals("Log 8 fl oz", ReminderText.logAction(250, VolumeUnit.FL_OZ))
+        assertEquals("1,250 of 2,450 ml today · 1,200 ml to go", ReminderText.body(1250.0, 2450, VolumeUnit.ML))
+        assertEquals("0 of 83 fl oz today · 83 fl oz to go", ReminderText.body(0.0, 2450, VolumeUnit.FL_OZ))
+        assertEquals("Log 250 ml", ReminderText.logAction(250.0, VolumeUnit.ML))
+        assertEquals("Log 8 fl oz", ReminderText.logAction(250.0, VolumeUnit.FL_OZ))
+        // LOG-004, LOG-005: in fl oz with default sizes the action reads, and logs, 8 fl oz.
+        val default = DrinkSizes.quickAdd(DrinkSizes.DEFAULT, VolumeUnit.FL_OZ).first()
+        assertEquals("Log 8 fl oz", ReminderText.logAction(default, VolumeUnit.FL_OZ))
+        assertEquals(8 * Units.ML_PER_FL_OZ, default, 1e-9)
     }
 }

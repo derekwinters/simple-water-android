@@ -56,14 +56,14 @@ object GoalMath {
     /** GOAL-006: a custom goal typed in [unit], or null when it is not 500–10,000 ml. */
     fun customGoalFromInput(text: String, unit: VolumeUnit): Int? {
         val value = text.trim().toIntOrNull() ?: return null
-        val ml = Units.displayToMl(value, unit)
+        val ml = Units.displayToMl(value, unit).roundToInt()
         return ml.takeIf { isValidGoalMl(it) }
     }
 
     /** LOG-003: how full the ring is, 0–1. */
-    fun fraction(totalMl: Int, goalMl: Int): Float =
-        if (goalMl <= 0) 0f else (totalMl.toFloat() / goalMl).coerceIn(0f, 1f)
+    fun fraction(totalMl: Double, goalMl: Int): Float =
+        if (goalMl <= 0) 0f else (totalMl / goalMl).toFloat().coerceIn(0f, 1f)
 
-    /** LOG-003: what is left to drink today, never negative. */
-    fun remainingMl(totalMl: Int, goalMl: Int): Int = (goalMl - totalMl).coerceAtLeast(0)
+    /** LOG-003: what is left to drink today, never negative, unrounded (GOAL-008 invariant). */
+    fun remainingMl(totalMl: Double, goalMl: Int): Double = (goalMl - totalMl).coerceAtLeast(0.0)
 }
