@@ -17,7 +17,19 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
   "<n> of 7 days met"; then today's entries (LOG-007), or "Nothing logged yet today." when there
   are none. The undo bar (LOG-008) sits in the layout's bottom slot.
 - **UI-004** The progress ring card shows today's total in `numeric.large` inside the ring, "of
-  <goal>" below it, and "<remaining> to go" or "Goal met" under the ring.
+  <goal>" below it, and "<remaining> to go" or "Goal met" under the ring. This is the whole card
+  whenever there is no ideal amount (LOG-014).
+- **UI-013** **The ideal ring.** While there is an ideal amount (LOG-013, LOG-014), the ring card
+  draws `ProgressRing`'s outer ring (DS-026): the ideal amount as a fraction of the goal, with a
+  tick at each of today's reminder times. The centre text is unchanged. Under the rings, in place
+  of UI-004's line:
+  - after the first reminder time, a main line in `AppText` `BodyStrong` — "220 ml behind",
+    "370 ml ahead" or "On track" (LOG-015) — over a `Meta` line "Ideal by <tk>: <ideal> ·
+    <remaining> to go", where `tk` is the last reminder time that has passed (UI-009 format);
+  - before the first reminder time, "Ideal starts at <t0>" over "<remaining> to go";
+  - once the goal is met, UI-004's "Goal met" alone.
+  The lines use the theme's normal text colours: behind and ahead are not colour-coded. The card
+  follows the clock, so the ideal amount steps on time while home stays open.
 - **UI-005** **History** uses the list layout with a back action, header "History" (HIST-001–004).
 - **UI-006** **Settings** uses the list layout with a back action, header "Settings". Sections,
   each introduced by an `AppText` section label: **Goal** (Weight, Activity level, Daily goal,
@@ -45,3 +57,5 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
 - [x] `WaterNavHost` with routes first-run, home, history, settings, reminders (UI-001).
 - [x] Each screen's root is `ListLayout` or `FormLayout` (UI-002–008).
 - [x] `ManifestDeclarationTest` covers the theme declaration (UI-012).
+- [ ] Home's ring card shows the ideal ring and its text from `Pace`, re-read on a clock tick
+      (UI-013).

@@ -37,6 +37,32 @@
 - **LOG-012** Upgrading from a version that stored whole-ml entries (database version 1) to
   decimal-ml storage (version 2) keeps every entry, with the same id, amount and instant.
 
+## Ideal amount (pace)
+
+The home screen shows how much the user would ideally have drunk by now next to what they have
+drunk (UI-013). The ideal amount follows today's reminder times; reminder notifications are not
+affected by it (REM-012 is unchanged).
+
+- **LOG-013** **The ideal amount steps at reminder times.** For today's reminder times
+  `t0 … tn` (REM-004), the ideal amount at a time of day `now` is `goal × k / n`, where `tk` is
+  the last reminder time at or before `now`. It is 0 before `t0`, holds steady between reminder
+  times, and equals the goal from `tn` on. Example: 08:00–20:00 every 60 minutes (n = 12) and a
+  2,450 ml goal → 0 ml at 07:59, 204.17 ml from 09:00, 816.67 ml from 12:00, 2,450 ml from 20:00.
+  **Invariant — the ideal amount changes only at a reminder time, and is never below 0 or above
+  the goal.** It is computed from today's reminder settings, the effective goal and the clock,
+  never stored and never interpolated between reminder times.
+- **LOG-014** **When there is no ideal amount.** There is none — the ideal ring and its
+  behind/ahead text are hidden and the ring card is as UI-004 describes — when reminders are
+  off, when today is not an active reminder day, or when today has fewer than two reminder times
+  (start equal to end, REM-003, or an interval longer than the span from start to end), since
+  `goal × k / n` needs at least one interval.
+- **LOG-015** **Behind, ahead, on track.** The difference is today's total minus the ideal
+  amount, both unrounded (GOAL-008 invariant). Its size is shown rounded to the nearest **10 ml**
+  (an exact half rounds up), or to the nearest whole **fl oz**: "220 ml behind" when the total
+  is below the ideal amount, "370 ml ahead" when above, and **"On track"** when the rounded size
+  is 0. The ideal amount is shown with the same rounding ("Ideal by 12:00: 820 ml"). "<remaining>
+  to go" keeps LOG-003's rounding, so it agrees with the total and goal in the ring.
+
 ## Build checklist
 
 - [x] `DayWindow` (start/end millis of a local date, date of an instant) in `:core`, unit tested
@@ -47,5 +73,8 @@
 - [x] Undo re-inserts the deleted row with its original id and instant (LOG-008).
 - [x] `DrinkSizes.quickAdd` gives the unit's defaults and snaps each size to its shown amount, unit
       tested (LOG-004, LOG-005).
+- [ ] `Pace` in `:core` computes the ideal amount, its tick positions and the behind/ahead text,
+      unit tested for the steps at reminder times, before the first and from the last reminder
+      time, hidden days, both units, rounding and "On track" (LOG-013–015).
 - [x] `drink_entries.amountMl` is `REAL`; the 1 → 2 migration is tested on a v1 database with
       entries, and schemas v1 and v2 are committed under `app/schemas/` (LOG-012).

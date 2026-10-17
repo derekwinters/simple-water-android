@@ -43,7 +43,8 @@ any time.
   affects display and entry only: drink volumes are stored as **decimal millilitres**. A value
   entered in fl oz is converted exactly (`× 29.5735`, unrounded), so 8 fl oz is stored as
   236.588 ml. Only display rounds: a volume is shown as a whole number of ml, or rounded to the
-  nearest whole fl oz.
+  nearest whole fl oz. The ideal amount and the behind/ahead difference are the one exception,
+  shown coarser, to the nearest 10 ml (LOG-015).
   **Invariant — a total is the sum of the stored amounts, rounded once for display, never a sum
   of rounded amounts.** Two 8 fl oz drinks total 16 fl oz, and a hundred of them 800 fl oz.
 - **GOAL-009** Volumes in ml are shown with a thousands separator and the unit, e.g. `2,450 ml`;
