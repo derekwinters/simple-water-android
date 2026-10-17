@@ -30,7 +30,7 @@ private val RingSize: Dp = 220.dp
 private val TickWidth: Dp = 2.dp
 
 /**
- * `ProgressRing` (`DS-017`): a `chip` track with a clockwise `work` arc from 12 o'clock, round
+ * `ProgressRing` (`DS-017`): a `chip` track with a clockwise `accent` arc from 12 o'clock, round
  * caps, stroke `spacing.md`, filled to [fraction] clamped to 0–1, and a centred [content] slot.
  * An empty fraction draws the track only (a round cap on a zero-length arc would draw a dot).
  *
@@ -81,7 +81,7 @@ fun ProgressRing(
             )
             if (clamped > 0f) {
                 drawArc(
-                    color = colors.work,
+                    color = colors.accent,
                     startAngle = -90f,
                     sweepAngle = 360f * clamped,
                     useCenter = false,

@@ -33,7 +33,7 @@ private const val MAX_DIGITS = 5
 
 /**
  * `NumberField` (`DS-024`): a single-line whole-number field — `chip` fill, rounded corners, the
- * value in `numeric.stat`, an optional unit [suffix] in `dim`, a `work` cursor and the number
+ * value in `numeric.stat`, an optional unit [suffix] in `dim`, an `accent` cursor and the number
  * keyboard. Only digits are accepted, at most five; whether the number is valid is the caller's
  * decision. [contentDescription] names the field for accessibility.
  */
@@ -66,7 +66,7 @@ fun NumberField(
                 textStyle = AppTheme.numericTypography.stat.copy(color = colors.fg),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
-                cursorBrush = SolidColor(colors.work),
+                cursorBrush = SolidColor(colors.accent),
             )
         }
         if (suffix != null) {

@@ -42,7 +42,7 @@ fun textStyleFor(role: TextRole): TextStyle {
 
 /**
  * `AppText` (`DS-034`): text in one of the [TextRole]s. [color] overrides the role's colour with
- * a token (for example `work` for a "Goal met" line); null keeps the role's own.
+ * a token (for example `accent` for a "Goal met" line); null keeps the role's own.
  */
 @Composable
 fun AppText(

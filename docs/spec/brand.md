@@ -15,7 +15,8 @@ safe zone.
 
 > **Invariant — the launcher icon's colours are the fixed brand palette in `BRAND-002`, not the
 > design-system tokens.** The palette is shared with the sibling apps so the icons read as a
-> family. The in-app theme (`design-system.md` DS-050) and the icon are independent. Every colour
+> family. The in-app theme (`design-system.md` DS-050, DS-053) borrows the blue and the grey as
+> its `accent` and `ideal` tokens, but neither side reads the other's values. Every colour
 > in the icon resources equals its `BRAND-002` value; drift fails `./gradlew test` (`BRAND-003`).
 
 > **Invariant — the master SVG is the source of truth.** `docs/brand/icon.svg` (`BRAND-017`) is

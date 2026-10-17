@@ -145,7 +145,7 @@ private fun DayRow(day: DaySummary, unit: VolumeUnit) {
             NumericText(
                 text = "${Units.formatNumber(day.totalMl, unit)} / ${Units.formatVolume(day.goalMl, unit)}",
                 style = AppTheme.numericTypography.inline,
-                color = if (day.met) colors.work else colors.fg,
+                color = if (day.met) colors.accent else colors.fg,
             )
         }
         Box(
@@ -160,12 +160,12 @@ private fun DayRow(day: DaySummary, unit: VolumeUnit) {
                     modifier = Modifier
                         .fillMaxWidth(day.fraction)
                         .fillMaxHeight()
-                        .background(colors.work),
+                        .background(colors.accent),
                 )
             }
         }
         if (day.met) {
-            AppText(text = "✓ Goal met", role = TextRole.Meta, color = colors.work)
+            AppText(text = "✓ Goal met", role = TextRole.Meta, color = colors.accent)
         }
     }
 }

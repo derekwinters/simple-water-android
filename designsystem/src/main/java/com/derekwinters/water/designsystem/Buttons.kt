@@ -18,12 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 
 /**
- * `PrimaryButton` (`DS-001`): filled, `work`-green fill, dark ink text, one fixed padding, weight
- * 700. It is the single primary action per screen — Start, Save.
+ * `PrimaryButton` (`DS-001`): filled, `accent` (brand blue) fill, light ink text, one fixed
+ * padding, weight 700. It is the single primary action per screen — Start, Save.
  *
- * "Dark ink" reads [DesignSystemColors.bg] (the token layer's darkest tone) rather than a raw
- * black, so the text stays legible against `work` without introducing a colour the token layer
- * does not name. "Weight 700" is [FontWeight.Bold], whose numeric value is exactly 700 — not a
+ * "Light ink" reads [DesignSystemColors.fg] rather than a raw white, so the text reaches 4.5:1
+ * against `accent` (`DS-054`) without introducing a colour the token layer does not name; the
+ * pairing lives in [primaryButtonFill] and [primaryButtonInk] so a test can compute its contrast.
+ * "Weight 700" is [FontWeight.Bold], whose numeric value is exactly 700 — not a
  * separate literal.
  */
 @Composable
@@ -41,10 +42,10 @@ fun PrimaryButton(
         enabled = enabled,
         shape = RoundedCornerShape(spacing.sm),
         colors = ButtonDefaults.buttonColors(
-            containerColor = colors.work,
-            contentColor = colors.bg,
-            disabledContainerColor = colors.work.copy(alpha = DisabledAlpha),
-            disabledContentColor = colors.bg.copy(alpha = DisabledAlpha),
+            containerColor = colors.primaryButtonFill,
+            contentColor = colors.primaryButtonInk,
+            disabledContainerColor = colors.primaryButtonFill.copy(alpha = DisabledAlpha),
+            disabledContentColor = colors.primaryButtonInk.copy(alpha = DisabledAlpha),
         ),
         // "One fixed padding" (DS-001): a single content-padding pair, read from the spacing
         // scale, that never varies by call site.
@@ -107,12 +108,12 @@ fun SecondaryButton(
  * `docs/spec/design-system.md` states `DS-003` as a rule about colour ("rendered in red"), not as
  * a new button shape, and does not say whether it is a variant of `PrimaryButton` or a component of
  * its own. Making it a boolean flag on `PrimaryButton` would contradict `DS-001`, which fixes
- * `PrimaryButton` to a `work`-green fill as part of what the name means. This implementation
+ * `PrimaryButton` to an `accent` fill as part of what the name means. This implementation
  * therefore gives it its own composable, `DestructiveButton`, mirroring `PrimaryButton`'s shape
- * (filled, one fixed padding, weight 700) with [DesignSystemColors.destructive] in place of `work`
- * and [DesignSystemColors.fg] as ink (white reads better against the saturated destructive red than
- * the dark ink `PrimaryButton` uses against `work`'s lighter green) — see this change's pull
- * request description for that decision. `AlertDialog`'s own destructive affirmative action
+ * (filled, one fixed padding, weight 700) with [DesignSystemColors.destructive] in place of `accent`
+ * and [DesignSystemColors.fg] as ink (white reads better against the saturated destructive red,
+ * as it does against `PrimaryButton`'s blue) — see this change's pull request description for that
+ * decision. `AlertDialog`'s own destructive affirmative action
  * (`DS-011`) is styled separately, as red *text*, not as this filled button (see `AlertDialog.kt`).
  */
 @Composable

@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
  * [CountStepper]'s `−`/`+` glyphs are plain text: nothing in `docs/spec/design-system.md` names a
  * toggle before this file, so its exact shape — track, knob, the colours it reads — is this
  * component's own reasonable choice, not a value recovered from an existing decision. It reads
- * `colors.work` for the on-state track (the same association `CUE-030` already gives "on" a
+ * `colors.accent` for the on-state track (the same association `CUE-030` already gives "on" a
  * meaning for elsewhere) and `colors.chip` for off, both already-defined tokens rather than a new
  * one (`DS-052`).
  */
@@ -49,7 +49,7 @@ fun Toggle(
     modifier: Modifier = Modifier,
 ) {
     val colors = AppTheme.colors
-    val trackColor = if (checked) colors.work else colors.chip
+    val trackColor = if (checked) colors.accent else colors.chip
     // A local val, not `contentDescription` used directly inside the `semantics {}` block below:
     // that block's implicit receiver is `SemanticsPropertyReceiver`, which has its own
     // `contentDescription` extension var, and writing `contentDescription = contentDescription`

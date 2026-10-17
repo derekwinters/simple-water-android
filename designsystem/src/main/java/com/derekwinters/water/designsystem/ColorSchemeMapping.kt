@@ -5,7 +5,7 @@ import androidx.compose.material3.darkColorScheme
 
 /**
  * Maps [DesignSystemColors] onto Material 3's [ColorScheme] roles (`DS-051`, ADR 0007 Decision 2):
- * `surface`←`bg`, `onSurface`←`fg`, `primary`←`work` (the app's accent), `outline`←`line`,
+ * `surface`←`bg`, `onSurface`←`fg`, `primary`←`accent`, `outline`←`line`,
  * `surfaceVariant`←`chip`, `error`←`destructive`. This is what keeps the root `MaterialTheme` off
  * Material's baseline purple/teal defaults — including for the three stock-Material screens
  * (summary, settings, first-run; `DS-061`) that have no bespoke wrapper to carry the palette
@@ -19,8 +19,8 @@ import androidx.compose.material3.darkColorScheme
  */
 fun designSystemColorScheme(colors: DesignSystemColors = DesignSystemColors.Default): ColorScheme =
     darkColorScheme(
-        primary = colors.work,
-        onPrimary = colors.bg,
+        primary = colors.accent,
+        onPrimary = colors.fg,
         surface = colors.bg,
         onSurface = colors.fg,
         background = colors.bg,

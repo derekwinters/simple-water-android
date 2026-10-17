@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 /**
  * `ChoiceChips` (`DS-018`): equal-width chips for choosing one ([multiSelect] false, radio
  * semantics) or several ([multiSelect] true, checkbox semantics) of a few short [options], laid
- * out [columns] per row. Selected chips use the `work` fill with `bg` ink, others `chip` with `fg`.
+ * out [columns] per row. Selected chips use the `accent` fill with `bg` ink, others `chip` with `fg`.
  * Each chip has a 48dp minimum touch target and reports its selected state; [descriptions], when
  * given, replace a chip's label for accessibility (for example "Monday" for "M").
  *
@@ -95,7 +95,7 @@ private fun Chip(
         modifier = modifier
             .minimumInteractiveComponentSize()
             .clip(RoundedCornerShape(spacing.sm))
-            .background(if (selected) colors.work else colors.chip)
+            .background(if (selected) colors.accent else colors.chip)
             .semantics { contentDescription = description }
             .then(selection)
             .padding(horizontal = spacing.xs, vertical = spacing.sm),

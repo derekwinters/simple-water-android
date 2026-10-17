@@ -243,7 +243,7 @@ private fun FullBleedLayoutPreview() {
             Text(
                 text = "0:32 of 0:45",
                 style = AppTheme.numericTypography.large,
-                color = AppTheme.colors.work,
+                color = AppTheme.colors.accent,
                 modifier = Modifier.align(Alignment.Center),
             )
         }

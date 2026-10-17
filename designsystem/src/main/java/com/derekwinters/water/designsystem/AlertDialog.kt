@@ -64,7 +64,7 @@ fun AlertDialog(
                     color = when {
                         !confirmEnabled -> colors.dim
                         isConfirmDestructive -> colors.destructive
-                        else -> colors.work
+                        else -> colors.accent
                     },
                 )
             }

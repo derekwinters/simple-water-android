@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 
 /**
- * `UndoBar` (`DS-025`): a full-width `chip` bar with a [message] and one `work` text action, shown
+ * `UndoBar` (`DS-025`): a full-width `chip` bar with a [message] and one `accent` text action, shown
  * in a list layout's bottom slot after something was removed (LOG-008). How long it stays is the
  * caller's decision.
  */
@@ -39,7 +39,7 @@ fun UndoBar(
     ) {
         AppText(text = message, modifier = Modifier.weight(1f))
         TextButton(onClick = onAction) {
-            Text(text = actionLabel, color = colors.work, fontWeight = FontWeight.Bold)
+            Text(text = actionLabel, color = colors.accent, fontWeight = FontWeight.Bold)
         }
     }
 }
