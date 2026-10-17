@@ -57,5 +57,5 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
 - [x] `WaterNavHost` with routes first-run, home, history, settings, reminders (UI-001).
 - [x] Each screen's root is `ListLayout` or `FormLayout` (UI-002–008).
 - [x] `ManifestDeclarationTest` covers the theme declaration (UI-012).
-- [ ] Home's ring card shows the ideal ring and its text from `Pace`, re-read on a clock tick
+- [x] Home's ring card shows the ideal ring and its text from `Pace`, re-read on a clock tick
       (UI-013).

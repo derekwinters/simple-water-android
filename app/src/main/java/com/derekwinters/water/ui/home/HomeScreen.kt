@@ -36,6 +36,9 @@ import com.derekwinters.water.WaterApp
 import com.derekwinters.water.core.EntryRules
 import com.derekwinters.water.core.GoalMath
 import com.derekwinters.water.core.History
+import com.derekwinters.water.core.Pace
+import com.derekwinters.water.core.PaceState
+import com.derekwinters.water.core.ReminderSettings
 import com.derekwinters.water.core.Units
 import com.derekwinters.water.core.VolumeUnit
 import com.derekwinters.water.core.WeekSummary
@@ -55,7 +58,10 @@ import com.derekwinters.water.designsystem.StatusIconButton
 import com.derekwinters.water.designsystem.TextRole
 import com.derekwinters.water.designsystem.UndoBar
 import com.derekwinters.water.ui.formatTime
+import com.derekwinters.water.ui.rememberNow
 import com.derekwinters.water.ui.rememberToday
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -73,6 +79,7 @@ fun HomeRoute(
     val current = settings.value
     val context = LocalContext.current
     val today by rememberToday()
+    val now by rememberNow()
     val zone = remember(today) { ZoneId.systemDefault() }
     val repository = app.repository
 
@@ -88,6 +95,8 @@ fun HomeRoute(
         records = records,
         currentGoalMl = current.goalMl,
     )
+    // LOG-013, LOG-014: computed from the clock each time it ticks, never stored.
+    val pace = Pace.today(current.reminders, now, current.goalMl)
 
     // LOG-008: the most recently deleted entry, while its undo bar shows.
     var removed by remember { mutableStateOf<DrinkEntry?>(null) }
@@ -116,8 +125,10 @@ fun HomeRoute(
         settings = current,
         entries = entries,
         week = week,
+        pace = pace,
         removed = removed,
         timeOf = { formatTime(context, it.loggedAt, zone) },
+        formatReminderTime = { formatTime(context, it) },
         onAdd = { amount -> app.appScope.launch { repository.addEntry(amount) } },
         onDelete = { entry ->
             removed = entry
@@ -139,8 +150,10 @@ fun HomeScreen(
     settings: UserSettings,
     entries: List<DrinkEntry>,
     week: WeekSummary,
+    pace: PaceState?,
     removed: DrinkEntry?,
     timeOf: (DrinkEntry) -> String,
+    formatReminderTime: (LocalTime) -> String,
     onAdd: (Double) -> Unit,
     onDelete: (DrinkEntry) -> Unit,
     onUndo: () -> Unit,
@@ -175,7 +188,13 @@ fun HomeScreen(
         },
     ) {
         item {
-            ProgressCard(totalMl = total, goalMl = settings.goalMl, unit = unit)
+            ProgressCard(
+                totalMl = total,
+                goalMl = settings.goalMl,
+                unit = unit,
+                pace = pace,
+                formatReminderTime = formatReminderTime,
+            )
         }
         item {
             QuickAddRow(
@@ -238,12 +257,19 @@ fun HomeScreen(
     }
 }
 
-/** LOG-003, UI-004. */
+/** LOG-003, UI-004; with an ideal amount (LOG-013–015), UI-013. */
 @Composable
-private fun ProgressCard(totalMl: Double, goalMl: Int, unit: VolumeUnit) {
+private fun ProgressCard(
+    totalMl: Double,
+    goalMl: Int,
+    unit: VolumeUnit,
+    pace: PaceState?,
+    formatReminderTime: (LocalTime) -> String,
+) {
     val colors = AppTheme.colors
     val spacing = AppTheme.spacing
     val remaining = GoalMath.remainingMl(totalMl, goalMl)
+    val paceText = pace?.let { Pace.text(it, totalMl, unit, formatReminderTime) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -254,7 +280,11 @@ private fun ProgressCard(totalMl: Double, goalMl: Int, unit: VolumeUnit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(spacing.md),
     ) {
-        ProgressRing(fraction = GoalMath.fraction(totalMl, goalMl)) {
+        ProgressRing(
+            fraction = GoalMath.fraction(totalMl, goalMl),
+            outerFraction = pace?.idealFraction,
+            outerTicks = pace?.tickFractions.orEmpty(),
+        ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 NumericText(text = Units.formatNumber(totalMl, unit), style = AppTheme.numericTypography.large)
                 AppText(text = "of ${Units.formatVolume(goalMl, unit)}", role = TextRole.Meta)
@@ -262,6 +292,15 @@ private fun ProgressCard(totalMl: Double, goalMl: Int, unit: VolumeUnit) {
         }
         if (remaining == 0.0) {
             AppText(text = "Goal met", role = TextRole.BodyStrong, color = colors.work)
+        } else if (paceText != null) {
+            // UI-013: behind and ahead are not colour-coded.
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(spacing.xs),
+            ) {
+                AppText(text = paceText.main, role = TextRole.BodyStrong)
+                AppText(text = paceText.detail, role = TextRole.Meta)
+            }
         } else {
             AppText(text = "${Units.formatVolume(remaining, unit)} to go", role = TextRole.Body)
         }
@@ -359,8 +398,10 @@ private fun HomeScreenPreview() {
             settings = UserSettings(onboarded = true),
             entries = entries,
             week = WeekSummary(emptyList()),
+            pace = Pace.today(ReminderSettings.DEFAULT, LocalDateTime.of(2026, 10, 11, 12, 30), 2450),
             removed = null,
             timeOf = { "9:30" },
+            formatReminderTime = { "%d:%02d".format(it.hour, it.minute) },
             onAdd = {},
             onDelete = {},
             onUndo = {},

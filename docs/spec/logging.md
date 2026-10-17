@@ -73,7 +73,7 @@ affected by it (REM-012 is unchanged).
 - [x] Undo re-inserts the deleted row with its original id and instant (LOG-008).
 - [x] `DrinkSizes.quickAdd` gives the unit's defaults and snaps each size to its shown amount, unit
       tested (LOG-004, LOG-005).
-- [ ] `Pace` in `:core` computes the ideal amount, its tick positions and the behind/ahead text,
+- [x] `Pace` in `:core` computes the ideal amount, its tick positions and the behind/ahead text,
       unit tested for the steps at reminder times, before the first and from the last reminder
       time, hidden days, both units, rounding and "On track" (LOG-013–015).
 - [x] `drink_entries.amountMl` is `REAL`; the 1 → 2 migration is tested on a v1 database with

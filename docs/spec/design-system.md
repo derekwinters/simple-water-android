@@ -97,9 +97,9 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
   outside DS-017's ring, sharing its centre — a `line` track, stroke `spacing.xs`, a gap of
   `spacing.xs` from the inner ring, and a clockwise `ideal` arc from 12 o'clock with round caps,
   filled to its own fraction clamped to 0–1 (an empty fraction draws the track only). Optional
-  ticks, each given as a fraction of the circle, are short radial `dim` marks of length
-  `spacing.xs` just outside the outer ring. The inner ring keeps DS-017's size; the outer ring
-  and ticks make the component larger rather than the inner ring smaller. Without an outer
+  ticks, each given as a fraction of the circle, are short radial `dim` marks, 2dp wide and
+  `spacing.xs` long, just outside the outer ring. The inner ring keeps DS-017's size; the outer
+  ring and ticks make the component larger rather than the inner ring smaller. Without an outer
   fraction the component is exactly DS-017. Used for the ideal amount (UI-013).
 - **DS-025** `UndoBar` *(added)*: a full-width `chip` bar with a message and one `work` text
   action, shown in a list layout's bottom slot (LOG-008).
