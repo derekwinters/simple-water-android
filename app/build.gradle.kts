@@ -83,6 +83,13 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // LOG-012: the Room migration test runs on the JVM under Robolectric.
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 kotlin {
@@ -142,4 +149,16 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+}
+
+// TEMPORARY (removed before review): print the exported Room schemas into the CI log, because
+// the CI artifact cannot be fetched from the environment this change was written in.
+fun dumpRoomSchemas() {
+    (fileTree(layout.buildDirectory) { include("**/AppDatabase/*.json") } + fileTree("schemas"))
+        .forEach { println("ROOM-SCHEMA-DUMP-BEGIN $it\n${it.readText()}\nROOM-SCHEMA-DUMP-END") }
+}
+tasks.configureEach {
+    if (name == "kspDebugKotlin") doLast { dumpRoomSchemas() }
+    if (name == "compileDebugUnitTestKotlin") doFirst { dumpRoomSchemas() }
 }

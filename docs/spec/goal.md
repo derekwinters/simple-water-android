@@ -29,7 +29,8 @@ any time.
 ## Custom goal
 
 - **GOAL-006** The user may set a **custom goal**, a whole number of ml (or fl oz, GOAL-008)
-  between 500 and 10,000 ml inclusive. While a custom goal is set, it is the effective goal and
+  between 500 and 10,000 ml inclusive. Goals are stored in whole ml (a goal entered in fl oz is
+  converted to the nearest whole ml); unlike drink amounts, a goal is never summed. While a custom goal is set, it is the effective goal and
   profile changes do not alter it.
 - **GOAL-007** "Use recommended goal" clears the custom goal; the effective goal is then the
   recommendation again. The effective goal is `custom ?: recommended`.
@@ -39,9 +40,12 @@ any time.
 ## Units
 
 - **GOAL-008** The **volume unit** is `ml` (default) or `fl oz` (US fluid ounce, 29.5735 ml). It
-  affects display and entry only: every volume is stored in whole millilitres. A volume shown in
-  fl oz is rounded to the nearest whole fl oz; a value entered in fl oz is converted to the
-  nearest whole ml.
+  affects display and entry only: drink volumes are stored as **decimal millilitres**. A value
+  entered in fl oz is converted exactly (`× 29.5735`, unrounded), so 8 fl oz is stored as
+  236.588 ml. Only display rounds: a volume is shown as a whole number of ml, or rounded to the
+  nearest whole fl oz.
+  **Invariant — a total is the sum of the stored amounts, rounded once for display, never a sum
+  of rounded amounts.** Two 8 fl oz drinks total 16 fl oz, and a hundred of them 800 fl oz.
 - **GOAL-009** Volumes in ml are shown with a thousands separator and the unit, e.g. `2,450 ml`;
   in fl oz as e.g. `83 fl oz`.
 
@@ -66,5 +70,7 @@ any time.
 - [x] `GoalMath.recommendedGoalMl`, `effectiveGoalMl`, weight validation in `:core`, unit tested
       (GOAL-001, GOAL-004, GOAL-006, GOAL-007).
 - [x] `Units` conversion and formatting in `:core`, unit tested (GOAL-008, GOAL-009).
+- [x] Drink volumes are decimal ml end to end (`:core`, Room, settings); display rounding only in
+      `Units` (GOAL-008).
 - [x] `goal_changes` table keyed by epoch day, upserted on every effective-goal change (GOAL-012).
 - [x] First-run flag stored in settings; the nav host starts at first-run until it is set (GOAL-010).

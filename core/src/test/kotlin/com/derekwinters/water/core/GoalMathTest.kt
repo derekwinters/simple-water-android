@@ -91,10 +91,13 @@ class GoalMathTest {
     // LOG-003: progress fraction and remaining volume.
     @Test
     fun progress() {
-        assertEquals(0.5f, GoalMath.fraction(1225, 2450), 0.0001f)
-        assertEquals(1f, GoalMath.fraction(3000, 2450), 0.0001f)
-        assertEquals(0f, GoalMath.fraction(0, 2450), 0.0001f)
-        assertEquals(1225, GoalMath.remainingMl(1225, 2450))
-        assertEquals(0, GoalMath.remainingMl(3000, 2450))
+        assertEquals(0.5f, GoalMath.fraction(1225.0, 2450), 0.0001f)
+        assertEquals(1f, GoalMath.fraction(3000.0, 2450), 0.0001f)
+        assertEquals(0f, GoalMath.fraction(0.0, 2450), 0.0001f)
+        assertEquals(1225.0, GoalMath.remainingMl(1225.0, 2450), 0.0)
+        assertEquals(0.0, GoalMath.remainingMl(3000.0, 2450), 0.0)
+        // GOAL-008 invariant: what is left is computed from the unrounded total.
+        val eight = Units.displayToMl(8, VolumeUnit.FL_OZ)
+        assertEquals("67 fl oz to go", Units.formatVolume(GoalMath.remainingMl(2 * eight, 2450), VolumeUnit.FL_OZ) + " to go")
     }
 }
