@@ -3,21 +3,17 @@ package com.derekwinters.water.designsystem
 import androidx.compose.ui.graphics.Color
 
 /**
- * The bespoke semantic colour tokens (`DS-050`): `work`, `recovery`, `neutral`, `bg`, `fg`, `dim`,
- * `line`, `chip`, a destructive red, and this app's added `ideal` grey (`DS-053`). `:designsystem`'s own components read these directly,
- * never a raw colour value — the same palette is also mapped onto Material 3's `ColorScheme` roles
- * (`DS-051`; see `ColorSchemeMapping.kt`).
+ * The bespoke semantic colour tokens (`DS-050`): `accent`, `recovery`, `neutral`, `bg`, `fg`, `dim`,
+ * `line`, `chip`, a destructive red, and this app's added `ideal` grey (`DS-053`). `:designsystem`'s
+ * own components read these directly, never a raw colour value — the same palette is also mapped
+ * onto Material 3's `ColorScheme` roles (`DS-051`; see `ColorSchemeMapping.kt`).
  *
- * `docs/spec/cues.md` (`CUE-030`, `CUE-031`) fixes what each interval kind's colour *means* — work
- * is green, recovery is yellow, warm-up and cool-down share a neutral, red is never used for a
- * kind — but `CUE-034` explicitly leaves the literal values to the design system. Neither
- * `CUE-034` nor `docs/spec/design-system.md` gives a hex value or a light/dark choice for any of
- * the nine tokens; [Default] is this implementation's reasonable choice for a dark-surfaced
- * running-screen palette, not a value fixed by either specification — see this change's pull
- * request description for that decision.
+ * `accent` is the brand blue (docs/spec/brand.md `BRAND-002` `blue`), renamed from Interval
+ * Trainer's `work` green; `ideal` is the brand grey. The other values are carried over from
+ * Interval Trainer unchanged. `docs/spec/design-system.md` (`DS-050`, `DS-053`) fixes every value.
  */
 data class DesignSystemColors(
-    val work: Color,
+    val accent: Color,
     val recovery: Color,
     val neutral: Color,
     val bg: Color,
@@ -31,7 +27,7 @@ data class DesignSystemColors(
 ) {
     companion object {
         val Default = DesignSystemColors(
-            work = Color(0xFF2ECC71),
+            accent = Color(0xFF1361A7),
             recovery = Color(0xFFF5C518),
             neutral = Color(0xFF8A93A3),
             bg = Color(0xFF121212),

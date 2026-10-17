@@ -110,7 +110,7 @@ fun ScreenHeader(
                 ) {
                     Text(
                         text = trailingAction.label,
-                        color = if (trailingAction.enabled) colors.work else colors.work.copy(alpha = DisabledAlpha),
+                        color = if (trailingAction.enabled) colors.accent else colors.accent.copy(alpha = DisabledAlpha),
                     )
                 }
 

@@ -6,10 +6,11 @@ layouts, the toggle, the stepper and the dialog — is **ported from Interval-tr
 `:designsystem` module** (its `docs/spec/design-system.md`), keeping that page's requirement IDs
 where the requirement carries over, so the two apps can be compared rule by rule. The port is a
 package rename (`com.derekwinters.intervaltrainer.designsystem` →
-`com.derekwinters.water.designsystem`) plus the deviations listed in §11; values are unchanged.
+`com.derekwinters.water.designsystem`) plus the deviations listed in §11; values are unchanged except the accent colour, which is the
+brand blue (DS-050).
 
 Components this app needs and Interval Trainer does not have are added here first, per the third
-invariant (DS-017–019, DS-024–026, DS-034, DS-053).
+invariant (DS-017–019, DS-024–026, DS-034, DS-053, DS-054).
 
 ---
 
@@ -34,6 +35,12 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
 > because the palette has no light variant.** `MainActivity` uses `SystemBarStyle.dark` with a
 > transparent scrim for both bars (DS-023).
 
+> **Invariant — the accent is the brand blue, and the primary button's text is chosen for
+> contrast against it.** `accent` has the value of BRAND-002's `blue`, not a near match, and the
+> primary button's ink is whichever token reaches 4.5:1 against the `accent` fill, checked by a test
+> that computes the WCAG contrast ratio from the token values (DS-054). Changing either colour
+> without that check passing is ruled out.
+
 > **Invariant — a value control reports what the user did, never what it found.** A stepper,
 > chip or field calls its change callback only in response to the user's input, never on first
 > composition.
@@ -42,7 +49,7 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
 
 ## 1. Buttons and actions (ported)
 
-- **DS-001** `PrimaryButton`: filled, `work` fill, dark ink (`bg`) text, weight 700, one fixed
+- **DS-001** `PrimaryButton`: filled, `accent` fill, light ink (`fg`) text, weight 700, one fixed
   padding. The single primary action per screen (home: log the default size; first run: Start
   tracking).
 - **DS-002** `SecondaryButton`: dashed `line` border, `chip` fill, `dim` text. Optional or
@@ -56,16 +63,16 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
 - **DS-007** `FabIconButton`: 56dp. (Kept with the port.)
 - **DS-008** `CountStepper`: a `−`/`+` mini-stepper with 26dp drawn buttons and 48dp touch
   targets. (Kept with the port; `ValueStepper`, DS-019, is its general form.)
-- **DS-014** `Toggle`: bespoke track-and-knob on/off switch; `work` track when on, `chip` when
+- **DS-014** `Toggle`: bespoke track-and-knob on/off switch; `accent` track when on, `chip` when
   off, `fg` knob. Never a Material `Switch`.
 - **DS-015** `StockListItem`: wraps Material 3 `ListItem` (headline, optional supporting text).
 - **DS-016** `StockListItem` has an optional `trailingContent` slot (used for `Toggle` and chips).
 - **DS-017** `ProgressRing` *(added)*: a circular track in `chip` with a clockwise arc from 12
-  o'clock in `work`, round caps, stroke `spacing.md`, filled to `fraction` clamped to 0–1, with a
+  o'clock in `accent`, round caps, stroke `spacing.md`, filled to `fraction` clamped to 0–1, with a
   centred content slot. Used for today's progress (LOG-003). An empty fraction draws the track
   only.
 - **DS-018** `ChoiceChips` *(added)*: a row (or a grid of `columns` per row) of equal-width chips
-  for choosing one or several of a few short options. Selected: `work` fill, `bg` ink, bold;
+  for choosing one or several of a few short options. Selected: `accent` fill, `bg` ink, bold;
   unselected: `chip` fill, `fg` ink. 48dp minimum touch target; each chip reports its selected
   state to accessibility. Used for units, activity level, days of the week and the interval.
 - **DS-019** `ValueStepper` *(added)*: `CountStepper`'s `−`/`+` buttons around a formatted label
@@ -90,7 +97,7 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
 - **DS-023** `MainActivity` calls `enableEdgeToEdge` with `SystemBarStyle.dark(TRANSPARENT)` for
   both bars.
 - **DS-024** `NumberField` *(added)*: a single-line whole-number field on `chip` with rounded
-  corners, the value in `numeric.stat`, an optional unit suffix in `dim`, a `work` cursor, the
+  corners, the value in `numeric.stat`, an optional unit suffix in `dim`, an `accent` cursor, the
   number keyboard, and a content description. It accepts digits only (at most 5); validation is
   the caller's.
 - **DS-026** `ProgressRing` outer ring *(added)*: an optional second, thinner ring drawn just
@@ -101,7 +108,7 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
   `spacing.xs` long, just outside the outer ring. The inner ring keeps DS-017's size; the outer
   ring and ticks make the component larger rather than the inner ring smaller. Without an outer
   fraction the component is exactly DS-017. Used for the ideal amount (UI-013).
-- **DS-025** `UndoBar` *(added)*: a full-width `chip` bar with a message and one `work` text
+- **DS-025** `UndoBar` *(added)*: a full-width `chip` bar with a message and one `accent` text
   action, shown in a list layout's bottom slot (LOG-008).
 
 ## 4. Numeric typography (ported, renamed)
@@ -125,15 +132,19 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
 
 ## 6. Colour tokens (ported)
 
-- **DS-050** Tokens, values unchanged from Interval Trainer: `work` #2ECC71 (the accent: primary
-  actions, progress, selected chips, toggles on), `recovery` #F5C518, `neutral` #8A93A3, `bg`
-  #121212, `fg` #F5F5F5, `dim` #9AA0A6, `line` #3C3C3C, `chip` #262626, destructive #E53935.
-  The names are kept from the port so the two apps' tokens stay comparable; in this app `work`
-  simply means "accent".
+- **DS-050** Tokens: `accent` #1361A7, the brand blue (BRAND-002 `blue`) — primary actions,
+  progress, selected chips, toggles on, "Goal met". The other values are unchanged from Interval
+  Trainer: `recovery` #F5C518, `neutral` #8A93A3, `bg` #121212, `fg` #F5F5F5, `dim` #9AA0A6,
+  `line` #3C3C3C, `chip` #262626, destructive #E53935. `accent` is Interval Trainer's `work`
+  (#2ECC71) renamed and recoloured (§11); the other names are kept from the port so the two apps'
+  tokens stay comparable. *(auto: `DesignSystemColorsTest.kt`.)*
 - **DS-053** `ideal` *(added)* #818589, the brand grey (BRAND `grey`): the outer ring's arc
   (DS-026). It is not mapped onto a Material 3 role. *(auto: `DesignSystemColorsTest.kt`.)*
+- **DS-054** *(added)* The primary button's text (DS-001) has a WCAG 2 contrast ratio of at least
+  4.5:1 against its `accent` fill, the threshold for normal-size text. With the DS-050 values,
+  `fg` on `accent` is about 5.8:1. *(auto: `DesignSystemColorsTest.kt`.)*
 - **DS-051** Mapped onto Material 3 `ColorScheme`: `surface`/`background`←`bg`,
-  `onSurface`←`fg`, `primary`←`work`, `outline`←`line`, `surfaceVariant`←`chip`,
+  `onSurface`←`fg`, `primary`←`accent`, `outline`←`line`, `surfaceVariant`←`chip`,
   `error`←destructive. *(auto: `ColorSchemeMappingTest.kt`.)*
 - **DS-052** No raw colour literal outside the token layer (review-time rule).
 
@@ -163,6 +174,9 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
 - `DurationScrollPicker` (DS-009) is not ported: nothing here enters a duration.
 - `CountStepper`'s private button is `internal` so `ValueStepper` (DS-019) reuses it.
 - The Robolectric tests (DS-091 gallery, DS-080 insets, DS-009 picker) are not ported (DS-091).
+- `work` is renamed `accent` and takes the brand blue (#1361A7) instead of Interval Trainer's
+  green, so the app's accent matches its launcher icon; `PrimaryButton`'s text moves from dark
+  `bg` ink to light `fg` to keep 4.5:1 contrast on the blue (DS-001, DS-050, DS-054).
 - Added: `ProgressRing` (with its outer ring, DS-026), the `ideal` colour token (DS-053), `ChoiceChips`, `ValueStepper`, `NumberField`, `UndoBar`, `AppText`/`NumericText`.
 - The ported files' KDoc is kept as written; where it cites Interval Trainer's own screens
   (`SCREEN-…`, `TIMER-…`, `CUE-…`), those IDs refer to that repository's specification.
@@ -173,5 +187,5 @@ invariant (DS-017–019, DS-024–026, DS-034, DS-053).
 |---|---|
 | DS-022 | `app/src/test/.../ManifestDeclarationTest.kt` |
 | DS-051 | `designsystem/src/test/.../ColorSchemeMappingTest.kt` |
-| DS-053 | `designsystem/src/test/.../DesignSystemColorsTest.kt` |
+| DS-050, DS-053, DS-054 | `designsystem/src/test/.../DesignSystemColorsTest.kt` |
 | everything else | *(manual: design facts, checked in review and on a device)* |

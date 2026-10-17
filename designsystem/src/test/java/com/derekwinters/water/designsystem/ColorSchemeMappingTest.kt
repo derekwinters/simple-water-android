@@ -25,8 +25,8 @@ class ColorSchemeMappingTest {
     }
 
     @Test
-    fun `primary reads work`() {
-        assertEquals(colors.work, scheme.primary)
+    fun `primary reads accent`() {
+        assertEquals(colors.accent, scheme.primary)
     }
 
     @Test

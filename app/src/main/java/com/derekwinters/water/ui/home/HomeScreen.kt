@@ -291,7 +291,7 @@ private fun ProgressCard(
             }
         }
         if (remaining == 0.0) {
-            AppText(text = "Goal met", role = TextRole.BodyStrong, color = colors.work)
+            AppText(text = "Goal met", role = TextRole.BodyStrong, color = colors.accent)
         } else if (paceText != null) {
             // UI-013: behind and ahead are not colour-coded.
             Column(

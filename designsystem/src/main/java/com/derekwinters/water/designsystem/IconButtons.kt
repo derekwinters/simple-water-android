@@ -100,7 +100,7 @@ fun FabIconButton(
     FloatingActionButton(
         onClick = onClick,
         modifier = modifier,
-        containerColor = colors.work,
+        containerColor = colors.accent,
         contentColor = colors.bg,
     ) {
         Icon(imageVector = icon, contentDescription = contentDescription)
