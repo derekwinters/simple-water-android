@@ -6,6 +6,7 @@ import com.derekwinters.water.core.GoalRecord
 import com.derekwinters.water.core.Profile
 import com.derekwinters.water.reminders.Notifications
 import com.derekwinters.water.reminders.ReminderScheduler
+import com.derekwinters.water.widget.WaterWidgetUpdater
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlinx.coroutines.flow.Flow
@@ -35,20 +36,26 @@ class WaterRepository(
     /** GOAL-012. */
     val goalRecords: Flow<List<GoalRecord>> = goals.observeAll().map { list -> list.map { it.toGoalRecord() } }
 
-    /** LOG-005, LOG-006: logs [amountMl] now. LOG-011: dismisses the reminder once the goal is met. */
+    /**
+     * LOG-005, LOG-006: logs [amountMl] now. LOG-011: dismisses the reminder once the goal is met.
+     * UI-018: the widget is redrawn, whether the drink came from the app or the reminder's action.
+     */
     suspend fun addEntry(amountMl: Double, atMillis: Long = System.currentTimeMillis()) {
         entries.insert(DrinkEntry(amountMl = amountMl, loggedAt = atMillis))
         dismissReminderIfGoalMet()
+        WaterWidgetUpdater.refreshAll(context)
     }
 
-    /** LOG-008: removes [entry]; [restoreEntry] puts it back unchanged. */
+    /** LOG-008: removes [entry]; [restoreEntry] puts it back unchanged. UI-018: both redraw the widget. */
     suspend fun deleteEntry(entry: DrinkEntry) {
         entries.delete(entry)
+        WaterWidgetUpdater.refreshAll(context)
     }
 
     suspend fun restoreEntry(entry: DrinkEntry) {
         entries.insert(entry)
         dismissReminderIfGoalMet()
+        WaterWidgetUpdater.refreshAll(context)
     }
 
     /** GOAL-010: first run finished (or skipped, with [Profile.DEFAULT]). */
@@ -58,7 +65,8 @@ class WaterRepository(
 
     /**
      * Applies a settings change, records the effective goal against today when it changed or
-     * first run just finished (GOAL-012), and re-arms the reminder alarm (REM-008).
+     * first run just finished (GOAL-012), re-arms the reminder alarm (REM-008), and redraws the
+     * home screen widget (UI-018).
      */
     suspend fun updateSettings(transform: (UserSettings) -> UserSettings) {
         val (before, after) = settingsStore.update(transform)
@@ -69,6 +77,8 @@ class WaterRepository(
             ReminderScheduler.rescheduleAll(context)
         }
         if (before.goalMl != after.goalMl) dismissReminderIfGoalMet()
+        // UI-018: any settings change (goal, unit, reminders among them) redraws the widget.
+        if (before != after) WaterWidgetUpdater.refreshAll(context)
     }
 
     private suspend fun dismissReminderIfGoalMet() {

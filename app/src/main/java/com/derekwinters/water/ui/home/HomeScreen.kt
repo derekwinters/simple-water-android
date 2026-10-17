@@ -39,6 +39,7 @@ import com.derekwinters.water.core.History
 import com.derekwinters.water.core.Pace
 import com.derekwinters.water.core.PaceState
 import com.derekwinters.water.core.ReminderSettings
+import com.derekwinters.water.core.Rings
 import com.derekwinters.water.core.Units
 import com.derekwinters.water.core.VolumeUnit
 import com.derekwinters.water.core.WeekSummary
@@ -270,6 +271,8 @@ private fun ProgressCard(
     val spacing = AppTheme.spacing
     val remaining = GoalMath.remainingMl(totalMl, goalMl)
     val paceText = pace?.let { Pace.text(it, totalMl, unit, formatReminderTime) }
+    // UI-015 invariant: the same rings as the home screen widget, from the same function.
+    val rings = Rings.of(totalMl, goalMl, pace)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -281,9 +284,9 @@ private fun ProgressCard(
         verticalArrangement = Arrangement.spacedBy(spacing.md),
     ) {
         ProgressRing(
-            fraction = GoalMath.fraction(totalMl, goalMl),
-            outerFraction = pace?.idealFraction,
-            outerTicks = pace?.tickFractions.orEmpty(),
+            fraction = rings.fraction,
+            outerFraction = rings.outerFraction,
+            outerTicks = rings.outerTicks,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 NumericText(text = Units.formatNumber(totalMl, unit), style = AppTheme.numericTypography.large)
