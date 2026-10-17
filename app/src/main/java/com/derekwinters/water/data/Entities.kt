@@ -10,7 +10,7 @@ import com.derekwinters.water.core.LoggedAmount
 @Entity(tableName = "drink_entries", indices = [Index(value = ["loggedAt"])])
 data class DrinkEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val amountMl: Int,
+    val amountMl: Double,
     val loggedAt: Long,
 ) {
     fun toLoggedAmount(): LoggedAmount = LoggedAmount(loggedAtMillis = loggedAt, amountMl = amountMl)
