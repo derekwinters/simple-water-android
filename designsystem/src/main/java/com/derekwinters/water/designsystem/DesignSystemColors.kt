@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 /**
  * The bespoke semantic colour tokens (`DS-050`): `work`, `recovery`, `neutral`, `bg`, `fg`, `dim`,
- * `line`, `chip`, and a destructive red. `:designsystem`'s own components read these directly,
+ * `line`, `chip`, a destructive red, and this app's added `ideal` grey (`DS-053`). `:designsystem`'s own components read these directly,
  * never a raw colour value — the same palette is also mapped onto Material 3's `ColorScheme` roles
  * (`DS-051`; see `ColorSchemeMapping.kt`).
  *
@@ -26,6 +26,8 @@ data class DesignSystemColors(
     val line: Color,
     val chip: Color,
     val destructive: Color,
+    /** `DS-053`: the brand grey, for `ProgressRing`'s outer (ideal) ring (`DS-026`). */
+    val ideal: Color,
 ) {
     companion object {
         val Default = DesignSystemColors(
@@ -38,6 +40,7 @@ data class DesignSystemColors(
             line = Color(0xFF3C3C3C),
             chip = Color(0xFF262626),
             destructive = Color(0xFFE53935),
+            ideal = Color(0xFF818589),
         )
     }
 }

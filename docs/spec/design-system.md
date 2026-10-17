@@ -9,7 +9,7 @@ package rename (`com.derekwinters.intervaltrainer.designsystem` →
 `com.derekwinters.water.designsystem`) plus the deviations listed in §11; values are unchanged.
 
 Components this app needs and Interval Trainer does not have are added here first, per the third
-invariant (DS-017–019, DS-024–025, DS-034).
+invariant (DS-017–019, DS-024–026, DS-034, DS-053).
 
 ---
 
@@ -93,6 +93,14 @@ invariant (DS-017–019, DS-024–025, DS-034).
   corners, the value in `numeric.stat`, an optional unit suffix in `dim`, a `work` cursor, the
   number keyboard, and a content description. It accepts digits only (at most 5); validation is
   the caller's.
+- **DS-026** `ProgressRing` outer ring *(added)*: an optional second, thinner ring drawn just
+  outside DS-017's ring, sharing its centre — a `line` track, stroke `spacing.xs`, a gap of
+  `spacing.xs` from the inner ring, and a clockwise `ideal` arc from 12 o'clock with round caps,
+  filled to its own fraction clamped to 0–1 (an empty fraction draws the track only). Optional
+  ticks, each given as a fraction of the circle, are short radial `dim` marks, 2dp wide and
+  `spacing.xs` long, just outside the outer ring. The inner ring keeps DS-017's size; the outer
+  ring and ticks make the component larger rather than the inner ring smaller. Without an outer
+  fraction the component is exactly DS-017. Used for the ideal amount (UI-013).
 - **DS-025** `UndoBar` *(added)*: a full-width `chip` bar with a message and one `work` text
   action, shown in a list layout's bottom slot (LOG-008).
 
@@ -122,6 +130,8 @@ invariant (DS-017–019, DS-024–025, DS-034).
   #121212, `fg` #F5F5F5, `dim` #9AA0A6, `line` #3C3C3C, `chip` #262626, destructive #E53935.
   The names are kept from the port so the two apps' tokens stay comparable; in this app `work`
   simply means "accent".
+- **DS-053** `ideal` *(added)* #818589, the brand grey (BRAND `grey`): the outer ring's arc
+  (DS-026). It is not mapped onto a Material 3 role. *(auto: `DesignSystemColorsTest.kt`.)*
 - **DS-051** Mapped onto Material 3 `ColorScheme`: `surface`/`background`←`bg`,
   `onSurface`←`fg`, `primary`←`work`, `outline`←`line`, `surfaceVariant`←`chip`,
   `error`←destructive. *(auto: `ColorSchemeMappingTest.kt`.)*
@@ -153,7 +163,7 @@ invariant (DS-017–019, DS-024–025, DS-034).
 - `DurationScrollPicker` (DS-009) is not ported: nothing here enters a duration.
 - `CountStepper`'s private button is `internal` so `ValueStepper` (DS-019) reuses it.
 - The Robolectric tests (DS-091 gallery, DS-080 insets, DS-009 picker) are not ported (DS-091).
-- Added: `ProgressRing`, `ChoiceChips`, `ValueStepper`, `NumberField`, `UndoBar`, `AppText`/`NumericText`.
+- Added: `ProgressRing` (with its outer ring, DS-026), the `ideal` colour token (DS-053), `ChoiceChips`, `ValueStepper`, `NumberField`, `UndoBar`, `AppText`/`NumericText`.
 - The ported files' KDoc is kept as written; where it cites Interval Trainer's own screens
   (`SCREEN-…`, `TIMER-…`, `CUE-…`), those IDs refer to that repository's specification.
 
@@ -163,4 +173,5 @@ invariant (DS-017–019, DS-024–025, DS-034).
 |---|---|
 | DS-022 | `app/src/test/.../ManifestDeclarationTest.kt` |
 | DS-051 | `designsystem/src/test/.../ColorSchemeMappingTest.kt` |
+| DS-053 | `designsystem/src/test/.../DesignSystemColorsTest.kt` |
 | everything else | *(manual: design facts, checked in review and on a device)* |

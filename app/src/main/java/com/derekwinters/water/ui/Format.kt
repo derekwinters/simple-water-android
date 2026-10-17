@@ -7,9 +7,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 import kotlinx.coroutines.delay
 
@@ -39,5 +41,19 @@ fun rememberToday(): State<LocalDate> = produceState(initialValue = LocalDate.no
         delay(30_000)
         val now = LocalDate.now()
         if (now != value) value = now
+    }
+}
+
+/**
+ * UI-013: the local date and time, re-read at the start of every minute so the ideal amount
+ * (LOG-013) steps at a reminder time while the screen stays open.
+ */
+@Composable
+fun rememberNow(): State<LocalDateTime> = produceState(initialValue = LocalDateTime.now()) {
+    while (true) {
+        val now = LocalDateTime.now()
+        val nextMinute = now.truncatedTo(ChronoUnit.MINUTES).plusMinutes(1)
+        delay(ChronoUnit.MILLIS.between(now, nextMinute).coerceAtLeast(1))
+        value = LocalDateTime.now()
     }
 }

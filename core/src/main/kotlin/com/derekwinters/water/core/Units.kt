@@ -24,8 +24,9 @@ object Units {
     const val KG_PER_LB = 0.45359237
 
     /**
-     * GOAL-008: decimal ml shown in [unit], rounded to a whole ml or a whole fl oz. This is the only
-     * place a volume is rounded: totals are summed unrounded and pass through here once.
+     * GOAL-008: decimal ml shown in [unit], rounded to a whole ml or a whole fl oz. Totals are
+     * summed unrounded and rounded once for display, here — or, for the ideal amount and the
+     * behind/ahead difference only, to the nearest 10 ml by [Pace] (LOG-015).
      */
     fun mlToDisplay(ml: Double, unit: VolumeUnit): Int = when (unit) {
         VolumeUnit.ML -> ml.roundToInt()
