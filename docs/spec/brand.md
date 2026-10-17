@@ -1,8 +1,8 @@
 # Brand (`BRAND`)
 
-The launcher icon and the notification icon: what they draw, in which colours, how the icon
-survives a launcher's mask and Android's themed-icon mode, and which files carry them. Modelled on
-Interval-trainer-android's `docs/spec/brand.md`.
+The launcher icon, the notification icon and the home screen widget's cup: what they draw, in
+which colours, how the icon survives a launcher's mask and Android's themed-icon mode, and which
+files carry them. Modelled on Interval-trainer-android's `docs/spec/brand.md`.
 
 The icon is **an open cup, three-quarters full of water**, drawn in the same family style as the
 owner's other apps (chores-web-android, Interval Trainer, Simple Stretch, Roadtrip): a white
@@ -106,6 +106,14 @@ order (the water first, so the cup draws over its edges):
 
   As in `BRAND-031`, the water has no stroke, leaving a gap of about 0.6 units to the cup.
 
+## 5a. Home screen widget
+
+- **BRAND-056** The home screen widget's cup (UI-016) and its picker preview (UI-019) are
+  `drawable/ic_launcher_foreground.xml` itself — BRAND-012's water and BRAND-013's cup in the
+  BRAND-002 colours, on a transparent canvas — drawn over the widget's own background. No other
+  drawable carries the cup's path data apart from the monochrome layer (BRAND-030). *(auto:
+  `WidgetDeclarationTest.kt`.)*
+
 ## 6. Files
 
 - **BRAND-050** SVG sources in `docs/brand/`: `icon.svg` (master), `icon-foreground.svg`
@@ -130,6 +138,7 @@ order (the water first, so the cup draws over its edges):
 - [x] Foreground and monochrome VectorDrawables; colours, element order and the monochrome
       water's missing stroke checked by `LauncherIconColourTest` (BRAND-003, BRAND-030, BRAND-031).
 - [x] Notification icon follows the cup (BRAND-055).
+- [x] The widget draws the launcher foreground for its cup and preview (BRAND-056).
 - [ ] Seen on a device, whole in a circular mask and as a themed icon (BRAND-060).
 
 ## Out of scope

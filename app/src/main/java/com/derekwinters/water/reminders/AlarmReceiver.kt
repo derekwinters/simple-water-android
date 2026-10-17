@@ -6,10 +6,14 @@ import android.content.Intent
 import com.derekwinters.water.WaterApp
 import com.derekwinters.water.core.DayWindow
 import com.derekwinters.water.core.ReminderPolicy
+import com.derekwinters.water.widget.WaterWidgetUpdater
 import java.time.ZoneId
 import kotlinx.coroutines.launch
 
-/** Receives the reminder alarm, decides whether to notify (REM-010), and arms the next alarm. */
+/**
+ * Receives the reminder alarm, decides whether to notify (REM-010), arms the next alarm, and
+ * redraws the home screen widget (UI-018).
+ */
 class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -25,7 +29,12 @@ class AlarmReceiver : BroadcastReceiver() {
                     // REM-011: armed whether or not a notification was shown.
                     ReminderScheduler.onAlarmHandled(app)
                 } finally {
-                    pending.finish()
+                    try {
+                        // UI-018: the widget's outer ring steps at each reminder time.
+                        WaterWidgetUpdater.refreshAll(app)
+                    } finally {
+                        pending.finish()
+                    }
                 }
             }
         }
@@ -60,7 +69,11 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 }
 
-/** REM-008: re-arms the alarm after reboot, clock or time-zone changes, an update, or a permission change. */
+/**
+ * REM-008: re-arms the alarm after reboot, clock or time-zone changes, an update, or a permission
+ * change. UI-018: these can change today's date too, so the widget is redrawn and its midnight
+ * alarm re-armed.
+ */
 class RescheduleReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action !in HANDLED_ACTIONS) return
@@ -69,6 +82,7 @@ class RescheduleReceiver : BroadcastReceiver() {
         app.appScope.launch {
             try {
                 ReminderScheduler.rescheduleAll(app)
+                WaterWidgetUpdater.refreshAll(app)
             } finally {
                 pending.finish()
             }

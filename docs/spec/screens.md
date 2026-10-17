@@ -52,6 +52,48 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
   their content (DS-080). No screen applies its own system-bar padding.
 - **UI-012** The app's theme declares no action bar in its own body (DS-022).
 
+## Home screen widget
+
+A home screen widget shows today's two rings without opening the app. It has no text: the app's
+cup in the middle identifies it.
+
+- **UI-014** **Size.** The widget is placed at 2 × 2 cells and can be resized larger
+  horizontally and vertically, never below 2 × 2 (`minWidth`/`minHeight` 110dp,
+  `targetCellWidth`/`targetCellHeight` 2, `resizeMode` horizontal and vertical). The rings fill
+  the widget's smaller side, less `spacing.sm` on each side, and stay centred.
+- **UI-015** **What it shows.** On the home ring card's background (`chip`, `spacing.md`
+  corners, UI-004) the widget draws the same rings as home (DS-027): the inner ring is today's
+  total against the effective goal (LOG-003), and the outer ring with its ticks is the ideal
+  amount (UI-013, LOG-013). When there is no ideal amount — reminders off, today not an active
+  reminder day, or fewer than two reminder times today (LOG-014) — the outer ring and its ticks
+  are hidden, as on home. No text is drawn; the widget's content description is the app's name
+  (UI-010).
+- **UI-016** **The cup.** The launcher icon's foreground (BRAND-056) sits in the centre, its
+  108-unit canvas spanning the inner ring's opening, so the cup (inside BRAND-020's safe zone)
+  never touches the ring.
+- **UI-017** **Tap.** Tapping anywhere on the widget opens the app on the home screen, as the
+  reminder notification does (UI-001, REM-012).
+- **UI-018** **Refresh.** The widget is redrawn when an entry is logged, undone or deleted (from
+  the app or the reminder's action, REM-012); when a reminder alarm is handled (REM-006), so the
+  outer ring steps at each reminder time; at local midnight (LOG-002), by an alarm of its own,
+  exact when the app may schedule exact alarms and inexact otherwise (as REM-007); after a time or
+  time-zone change, a reboot or an app update (REM-008's broadcasts); when any setting changes
+  (the goal, the volume unit and the reminder settings among them); and whenever the launcher
+  asks (placed, resized, restored). The midnight alarm is armed while at least one widget is
+  placed and cancelled when the last one is removed.
+- **UI-019** **Widget picker.** The picker's preview image is the launcher icon's foreground,
+  the same cup the widget shows (BRAND-056).
+
+**Invariant — the widget's rings always equal the home screen's rings at the same moment; both
+come from the same `:core` functions (`Rings`), never a second calculation.**
+
+**Invariant — the widget never shows a previous day's rings.** Every redraw computes the rings
+from the entries of the local date of the moment it is drawn (LOG-002), and the midnight refresh
+of UI-018 redraws it when the date changes.
+
+**Invariant — the widget's cup is the launcher foreground drawable itself (BRAND-056), whose
+path data is the master icon's (BRAND-017), never a redrawn copy.**
+
 ## Build checklist
 
 - [x] `WaterNavHost` with routes first-run, home, history, settings, reminders (UI-001).
@@ -59,3 +101,10 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
 - [x] `ManifestDeclarationTest` covers the theme declaration (UI-012).
 - [x] Home's ring card shows the ideal ring and its text from `Pace`, re-read on a clock tick
       (UI-013).
+- [x] Home's ring card and the widget both take their rings from `Rings` in `:core`, unit tested
+      for equal results, the hidden outer ring and midnight (UI-015, the widget invariants).
+- [x] `WaterWidget` (Jetpack Glance) draws the rings with `RingBitmap`, opens home on a tap, and
+      is refreshed by `WaterWidgetUpdater` at every point UI-018 lists (UI-014–019).
+- [x] `WidgetDeclarationTest` checks the provider metadata and receivers (UI-014, UI-018, UI-019)
+      and that the cup is the launcher foreground (BRAND-056).
+- [ ] Seen on a device: placed, resized, refreshed and tapped (UI-014–018).

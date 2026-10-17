@@ -18,6 +18,10 @@ owner's other apps.
 - **Pace.** On a reminder day, a thin grey ring outside the progress ring shows how much you
   would ideally have drunk by now, stepping up at each reminder time, with a line saying how far
   behind or ahead you are.
+- **Home screen widget.** The same two rings on your home screen, with the app's cup in the
+  middle and no text; place it at 2 × 2 and resize it as you like. It updates when you log or
+  delete a drink, at each reminder time, at midnight and when settings change; tap it to open
+  the app.
 - **Reminders you control.** On or off, which days, from and until when, and how often (every
   30, 60, 90 or 120 minutes). Reminders stop for the day once the goal is met. Each reminder shows
   your progress and has a "Log 250 ml" button (your first drink size) so you can log without

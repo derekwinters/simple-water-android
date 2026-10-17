@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The home screen widget (docs/spec/screens.md UI-014, UI-018, UI-019). 2 × 2 cells minimum,
+     resizable both ways and never below 2 × 2; no periodic update, since the app refreshes it at
+     every point UI-018 lists; the picker preview is the launcher foreground (BRAND-056). -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="110dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:previewImage="@drawable/ic_launcher_foreground" />

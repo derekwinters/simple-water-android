@@ -26,8 +26,8 @@ import kotlin.math.sin
 /** `DS-017`'s drawn diameter for the home screen's ring. */
 private val RingSize: Dp = 220.dp
 
-/** `DS-026`: the width of a tick on the outer ring. */
-private val TickWidth: Dp = 2.dp
+/** `DS-026`: the width of a tick on the outer ring; `RingBitmap` (`DS-027`) draws the same. */
+internal val TickWidth: Dp = 2.dp
 
 /**
  * `ProgressRing` (`DS-017`): a `chip` track with a clockwise `accent` arc from 12 o'clock, round
