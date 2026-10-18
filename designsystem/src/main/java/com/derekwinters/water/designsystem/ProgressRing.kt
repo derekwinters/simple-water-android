@@ -26,7 +26,7 @@ import kotlin.math.sin
 /** `DS-017`'s drawn diameter for the home screen's ring. */
 private val RingSize: Dp = 220.dp
 
-/** `DS-026`: the width of a tick on the outer ring; `RingBitmap` (`DS-027`) draws the same. */
+/** `DS-026`: the width of a tick on the outer ring. */
 internal val TickWidth: Dp = 2.dp
 
 /**

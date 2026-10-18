@@ -28,6 +28,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.derekwinters.water.WaterApp
 import com.derekwinters.water.core.ActivityLevel
+import com.derekwinters.water.core.CupTextMode
 import com.derekwinters.water.core.DrinkSizes
 import com.derekwinters.water.core.GoalMath
 import com.derekwinters.water.core.Units
@@ -175,6 +176,34 @@ fun SettingsScreen(
                         checked = settings.reminders.enabled,
                         onCheckedChange = { on -> onUpdate { it.copy(reminders = it.reminders.copy(enabled = on)) } },
                         contentDescription = "Reminders",
+                    )
+                },
+            )
+        }
+
+        item { SectionLabel("WIDGET") }
+        item {
+            // UI-021, UI-023.
+            StockListItem(headline = "Text in cup", modifier = rowModifier)
+        }
+        item {
+            ChoiceChips(
+                options = CupTextMode.entries.map { it.label },
+                isSelected = { CupTextMode.entries[it] == settings.widget.text },
+                onToggle = { index -> onUpdate { it.copy(widget = it.widget.copy(text = CupTextMode.entries[index])) } },
+                modifier = Modifier.padding(horizontal = AppTheme.spacing.lg),
+            )
+        }
+        item {
+            // UI-020, UI-023.
+            StockListItem(
+                headline = "Ideal line",
+                modifier = rowModifier,
+                trailingContent = {
+                    Toggle(
+                        checked = settings.widget.idealLine,
+                        onCheckedChange = { on -> onUpdate { it.copy(widget = it.widget.copy(idealLine = on)) } },
+                        contentDescription = "Ideal line",
                     )
                 },
             )
