@@ -108,17 +108,9 @@ invariant (DS-017–019, DS-024–027, DS-034, DS-053, DS-054).
   `spacing.xs` long, just outside the outer ring. The inner ring keeps DS-017's size; the outer
   ring and ticks make the component larger rather than the inner ring smaller. Without an outer
   fraction the component is exactly DS-017. Used for the ideal amount (UI-013).
-- **DS-027** `RingBitmap` *(added)*: DS-017's ring and DS-026's outer ring drawn to a square
-  bitmap, for a surface that cannot run Compose UI (the home screen widget, UI-015). Same tokens
-  (`chip` track, `accent` arc, `line` outer track, `ideal` outer arc, `dim` ticks), the same
-  strokes, gap and tick sizes in dp, clockwise from 12 o'clock with round caps, fractions clamped
-  to 0–1. The rings fill the square: the outer ring's ticks reach its edge, and the room for the
-  outer ring is kept even while the outer ring is hidden, so the inner ring does not change size
-  when the ideal amount appears or goes (DS-026: the outer ring never makes the inner ring
-  smaller). An optional centre drawable is drawn centred, its bounds a square as wide as the
-  inner ring's opening (the circle inside the inner stroke). The geometry is `RingGeometry`, a
-  plain calculation from the bitmap's side and the screen density. *(auto:
-  `RingGeometryTest.kt`.)*
+- **DS-027** *Retired: `RingBitmap` and its `RingGeometry`, which drew the rings for the home
+  screen widget. The widget now draws the cup (docs/spec/screens.md UI-015, docs/spec/brand.md
+  BRAND-056), and home draws its rings with `ProgressRing`.*
 - **DS-025** `UndoBar` *(added)*: a full-width `chip` bar with a message and one `accent` text
   action, shown in a list layout's bottom slot (LOG-008).
 
@@ -188,7 +180,7 @@ invariant (DS-017–019, DS-024–027, DS-034, DS-053, DS-054).
 - `work` is renamed `accent` and takes the brand blue (#1361A7) instead of Interval Trainer's
   green, so the app's accent matches its launcher icon; `PrimaryButton`'s text moves from dark
   `bg` ink to light `fg` to keep 4.5:1 contrast on the blue (DS-001, DS-050, DS-054).
-- Added: `ProgressRing` (with its outer ring, DS-026) and `RingBitmap` (DS-027), the `ideal` colour token (DS-053), `ChoiceChips`, `ValueStepper`, `NumberField`, `UndoBar`, `AppText`/`NumericText`.
+- Added: `ProgressRing` (with its outer ring, DS-026), the `ideal` colour token (DS-053), `ChoiceChips`, `ValueStepper`, `NumberField`, `UndoBar`, `AppText`/`NumericText`.
 - The ported files' KDoc is kept as written; where it cites Interval Trainer's own screens
   (`SCREEN-…`, `TIMER-…`, `CUE-…`), those IDs refer to that repository's specification.
 
@@ -199,5 +191,4 @@ invariant (DS-017–019, DS-024–027, DS-034, DS-053, DS-054).
 | DS-022 | `app/src/test/.../ManifestDeclarationTest.kt` |
 | DS-051 | `designsystem/src/test/.../ColorSchemeMappingTest.kt` |
 | DS-050, DS-053, DS-054 | `designsystem/src/test/.../DesignSystemColorsTest.kt` |
-| DS-027 | `designsystem/src/test/.../RingGeometryTest.kt` |
 | everything else | *(manual: design facts, checked in review and on a device)* |

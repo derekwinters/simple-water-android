@@ -108,11 +108,25 @@ order (the water first, so the cup draws over its edges):
 
 ## 5a. Home screen widget
 
-- **BRAND-056** The home screen widget's cup (UI-016) and its picker preview (UI-019) are
-  `drawable/ic_launcher_foreground.xml` itself — BRAND-012's water and BRAND-013's cup in the
-  BRAND-002 colours, on a transparent canvas — drawn over the widget's own background. No other
-  drawable carries the cup's path data apart from the monochrome layer (BRAND-030). *(auto:
-  `WidgetDeclarationTest.kt`.)*
+- **BRAND-056** The home screen widget (UI-016) draws the cup itself, at a variable water level,
+  from the master icon's path data and BRAND-002 colours, in icon units (BRAND-001) scaled to the
+  widget:
+  - the cup is BRAND-013's outline exactly, in `grey`, drawn over the water;
+  - the water at a fraction `f` (0–1) of full is BRAND-012's shape with its top line moved to
+    `y = 72.48 − 35.84 f`, so that `f` = 0.75 is BRAND-012 exactly and `f` = 1 puts the top at
+    36.64. Its sides continue BRAND-012's sides (out 0.1 unit per unit up, from (44.424, 72.48)
+    and (63.576, 72.48)), which keeps about BRAND-012's gap to the cup at every level. The top
+    is four quadratic half-waves, each a quarter of the water's width at that height, with
+    control points 2.52 units above and below the line (above first). Fill and stroke `blue`,
+    stroke 1.26, round joins, clipped at y = 73.11 (72.48 plus half the stroke) so a low wave never dips below the
+    bottom. At `f` = 0 no water is drawn;
+  - the outline's bounds, including its stroke, are x 35.1–72.9 and y 31.74–78.78; this is the box
+    UI-015 scales to the card.
+
+  The geometry is `CupGeometry` in `:core`; `CupBitmap` draws it. The widget picker's preview
+  (UI-019) is `drawable/ic_launcher_foreground.xml`, the cup at three-quarters. No drawable apart
+  from the foreground and the monochrome layer (BRAND-030) carries the cup's path data.
+  *(auto: `CupGeometryTest.kt` against `docs/brand/icon.svg`; `WidgetDeclarationTest.kt`.)*
 
 ## 6. Files
 
@@ -138,7 +152,8 @@ order (the water first, so the cup draws over its edges):
 - [x] Foreground and monochrome VectorDrawables; colours, element order and the monochrome
       water's missing stroke checked by `LauncherIconColourTest` (BRAND-003, BRAND-030, BRAND-031).
 - [x] Notification icon follows the cup (BRAND-055).
-- [x] The widget draws the launcher foreground for its cup and preview (BRAND-056).
+- [x] The widget draws the cup from `CupGeometry` at any water level, checked against the master
+      SVG; the picker preview is the launcher foreground (BRAND-056).
 - [ ] Seen on a device, whole in a circular mask and as a themed icon (BRAND-060).
 
 ## Out of scope
