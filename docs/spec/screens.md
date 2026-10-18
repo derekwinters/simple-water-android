@@ -35,8 +35,9 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
   each introduced by an `AppText` section label: **Goal** (Weight, Activity level, Daily goal,
   and "Use recommended goal" only while a custom goal is set); **Units** (Volume: ml / fl oz
   chips); **Drinks** (Quick-add sizes); **Reminders** (a summary row with a `Toggle`, opening the
-  reminders screen); **Widget** ("Text in cup" with None / Percent / Amount chips, and "Ideal
-  line" with a `Toggle`, UI-023; each change is saved at once); **Permissions** (Notifications status, REM-014; Alarms & reminders on
+  reminders screen); **Widget** ("Text in cup" with None / Percent / Amount chips, then "Ideal
+  line", "Background" and "Cup fill", each with a `Toggle`, UI-023; each change is saved at
+  once); **Permissions** (Notifications status, REM-014; Alarms & reminders on
   Android 12/12L while not allowed, REM-015).
 - **UI-007** Settings edits that need input open the design system's `AlertDialog` with content
   (DS-012): Weight (number field + kg/lb chips), Activity level (chips), Daily goal (number field
@@ -56,29 +57,40 @@ three layouts (DS-070). Text is drawn with `AppText` roles (DS-034), never a raw
 ## Home screen widget
 
 A home screen widget shows today's progress without opening the app: the app's cup fills the
-card, and the water in it rises toward today's goal. There is one widget. By default it has no
+widget, and the water in it rises toward today's goal. There is one widget. By default it has no
 text; a setting adds a number inside the cup (UI-021).
 
 - **UI-014** **Size.** The widget is placed at 2 × 2 cells and can be resized larger
   horizontally and vertically, never below 2 × 2 (`minWidth`/`minHeight` 110dp,
   `targetCellWidth`/`targetCellHeight` 2, `resizeMode` horizontal and vertical).
-- **UI-015** **What it shows.** On the home ring card's background (`chip`, `spacing.md`
-  corners, UI-004) the widget draws the cup (UI-016), scaled to fill the card's smaller side: the
-  cup's outline, including its stroke, is made as large as fits inside the card less `spacing.md`
-  on each side, and is centred. The water's height is today's total against the effective goal
-  (LOG-003), the same fraction as home's inner ring, clamped between empty (no water drawn) and
-  full. The widget's content description is the app's name (UI-010).
+- **UI-015** **What it shows.** The widget draws the cup (UI-016), scaled to fill the widget's
+  smaller side: the cup's outline, including its stroke, is made as large as fits inside the
+  widget less `spacing.xs` on each side, and is centred.
+  - **Background.** While the "Background" setting is on (UI-023), the cup sits on the home ring
+    card's background (`chip`, `spacing.md` corners, UI-004) filling the widget. While it is off
+    (the default), nothing is drawn behind the cup and the wallpaper shows through.
+  - **Cup fill.** While the "Cup fill" setting is on (the default, UI-023), the inside of the cup
+    — BRAND-013's outline closed straight across its top — is filled with `bg` at 55% opacity, so
+    the water, the ideal line and the text read on any wallpaper. While it is off, the inside of
+    the cup is left clear.
+  - **Order.** From the back: the background, the cup fill, the water, the ideal line (UI-020),
+    the cup's outline, and the text or check (UI-021, UI-022).
+
+  The water's height is today's total against the effective goal (LOG-003), the same fraction as
+  home's inner ring, clamped between empty (no water drawn) and full. The widget's content
+  description is the app's name (UI-010).
 - **UI-016** **The cup.** The cup and its water are drawn from the master icon's path data and
   colours at a variable water level (BRAND-056): the cup is BRAND-013's outline, and the water is
   BRAND-012's shape with its wavy top and its gap to the cup, its top at the water's height.
-- **UI-017** **Tap.** Tapping anywhere on the widget opens the app on the home screen, as the
-  reminder notification does (UI-001, REM-012).
+- **UI-017** **Tap.** Tapping anywhere in the widget's area, with or without the background
+  (UI-015), opens the app on the home screen, as the reminder notification does (UI-001,
+  REM-012).
 - **UI-018** **Refresh.** The widget is redrawn when an entry is logged, undone or deleted (from
   the app or the reminder's action, REM-012); when a reminder alarm is handled (REM-006), so the
   ideal line steps at each reminder time; at local midnight (LOG-002), by an alarm of its own,
   exact when the app may schedule exact alarms and inexact otherwise (as REM-007); after a time or
   time-zone change, a reboot or an app update (REM-008's broadcasts); when any setting changes
-  (the goal, the volume unit, the reminder settings and both widget settings of UI-023 among
+  (the goal, the volume unit, the reminder settings and every widget setting of UI-023 among
   them); and whenever the launcher asks (placed, resized, restored). The midnight alarm is armed
   while at least one widget is placed and cancelled when the last one is removed.
 - **UI-019** **Widget picker.** The picker's preview image is the launcher icon's foreground
@@ -122,9 +134,11 @@ text; a setting adds a number inside the cup (UI-021).
   in `fg` over the same `bg` outline at stroke 20. It stays a check for as long as the total
   stays at or above the goal, however far over. With the text set to None nothing is written;
   the full cup alone shows the goal is met.
-- **UI-023** **Widget settings.** Two settings, stored with the other settings (APP-003) and kept
-  across restarts: "Text in cup" — None, Percent or Amount, None by default (UI-021); and "Ideal
-  line" — on or off, on by default (UI-020). They are edited in Settings' Widget section (UI-006).
+- **UI-023** **Widget settings.** Four settings, stored with the other settings (APP-003) and kept
+  across restarts: "Text in cup" — None, Percent or Amount, None by default (UI-021); "Ideal
+  line" — on or off, on by default (UI-020); "Background" — on or off, **off** by default
+  (UI-015); and "Cup fill" — on or off, **on** by default (UI-015). They are edited in Settings'
+  Widget section (UI-006).
 
 **Invariant — the widget's water height, ideal line and check always come from the same `:core`
 values as home's rings at the same moment, never a second calculation.** The water height is
@@ -140,6 +154,10 @@ UI-018 redraws it when the date changes.
 
 **Invariant — the widget's cup and water use the master icon's path data and BRAND-002 colours
 (BRAND-017), never a hand-drawn approximation.**
+
+**Invariant — with Background off, the widget draws nothing outside the cup's outline.** No card,
+no corner radius and no other backdrop; the cup fill is BRAND-013's own path closed across its
+top, never a box around it.
 
 ## Build checklist
 
@@ -160,5 +178,8 @@ UI-018 redraws it when the date changes.
 - [x] `WidgetDeclarationTest` checks the provider metadata and receivers (UI-014, UI-018, UI-019)
       and that the widget draws from `CupGeometry` and `WidgetCup` (BRAND-056, the invariants).
 - [x] Settings' Widget section, stored by `SettingsStore` (UI-006, UI-023; `SettingsStoreTest`).
-- [ ] Seen on a device: placed, resized, refreshed and tapped, with each text setting and the
-      ideal line (UI-014–023).
+- [x] The cup at a `spacing.xs` margin; the background and cup fill as settings, off and on by
+      default, with the cup fill from `CupGeometry.fillPath` (UI-015, UI-023, the background
+      invariant).
+- [ ] Seen on a device: placed, resized, refreshed and tapped, with each text setting, the ideal
+      line, the background and the cup fill (UI-014–023).

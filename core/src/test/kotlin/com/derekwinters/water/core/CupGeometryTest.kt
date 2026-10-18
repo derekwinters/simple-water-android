@@ -140,7 +140,7 @@ class CupGeometryTest {
         assertEquals(CupGeometry.idealLine(0.0), CupGeometry.idealLine(-1.0))
     }
 
-    // UI-015, UI-014: the cup fills the card less spacing.md each side, centred, at any size.
+    // UI-015, UI-014: the cup fills the widget less a padding each side, centred, at any size.
     @Test
     fun theCupFillsTheCardLessThePadding() {
         val bounds = CupGeometry.BOUNDS
@@ -153,6 +153,54 @@ class CupGeometryTest {
             assertTrue("fills one side at $w x $h", Math.abs(drawnW - (w - 24)) < 1e-9 || Math.abs(drawnH - (h - 24)) < 1e-9)
             assertEquals(w / 2, p.left + drawnW / 2, 1e-9)
             assertEquals(h / 2, p.top + drawnH / 2, 1e-9)
+        }
+    }
+
+    // UI-015: at the widget's spacing.xs margin (4dp) the cup's limiting side comes within 4dp of
+    // the widget's edge, the other side keeps more, and the cup stays centred.
+    @Test
+    fun theCupComesWithinTheMarginOfTheWidgetsEdge() {
+        val bounds = CupGeometry.BOUNDS
+        for (density in listOf(1.0, 2.625, 3.5)) {
+            // 2 × 2: the cup is taller than wide, so the top and bottom are the limiting side.
+            val w = 110.0 * density
+            val h = 110.0 * density
+            val margin = 4.0 * density
+            val p = CupGeometry.placement(w, h, margin)
+            assertEquals(margin, p.top, 1e-9)
+            assertEquals(margin, h - (p.top + bounds.height * p.scale), 1e-9)
+            assertTrue(p.left > margin)
+            assertEquals(w / 2, p.left + bounds.width * p.scale / 2, 1e-9)
+            // Larger than at the old spacing.md margin (12dp).
+            assertTrue(p.scale > CupGeometry.placement(w, h, 12.0 * density).scale)
+        }
+        // A wide widget: the height still limits, centred across.
+        val wide = CupGeometry.placement(400.0, 110.0, 4.0)
+        assertEquals(4.0, wide.top, 1e-9)
+        assertEquals(200.0, wide.left + bounds.width * wide.scale / 2, 1e-9)
+        // A tall, narrow widget: now the width limits.
+        val tall = CupGeometry.placement(110.0, 400.0, 4.0)
+        assertEquals(4.0, tall.left, 1e-9)
+        assertEquals(200.0, tall.top + bounds.height * tall.scale / 2, 1e-9)
+    }
+
+    // UI-015, background invariant: the cup fill is BRAND-013's own outline closed across its top,
+    // in bg at 55%, so it lies inside the cup's outline and draws nothing outside it.
+    @Test
+    fun theCupFillIsTheCupsOwnOutlineClosed() {
+        assertEquals(CupGeometry.cupPath + PathOp.Close, CupGeometry.fillPath)
+        assertSamePath("fill", attribute(masterPaths[1], "d") + " Z", CupGeometry.fillPath.toSvg())
+        assertEquals(0.55, CupGeometry.FILL_OPACITY, 0.0)
+        // Every point the fill passes through, control points included, is inside the outline's bounds.
+        val b = CupGeometry.BOUNDS
+        for (op in CupGeometry.fillPath) {
+            val points = when (op) {
+                is PathOp.MoveTo -> listOf(op.x to op.y)
+                is PathOp.LineTo -> listOf(op.x to op.y)
+                is PathOp.QuadTo -> listOf(op.cx to op.cy, op.x to op.y)
+                PathOp.Close -> emptyList()
+            }
+            for ((x, y) in points) assertTrue("($x, $y)", x in b.left..b.right && y in b.top..b.bottom)
         }
     }
 

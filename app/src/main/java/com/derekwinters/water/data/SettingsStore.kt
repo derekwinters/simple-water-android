@@ -35,7 +35,7 @@ data class UserSettings(
     /** LOG-004: as stored; [DrinkSizes.DEFAULT] means not customised. */
     val drinkSizes: List<Double> = DrinkSizes.DEFAULT,
     val reminders: ReminderSettings = ReminderSettings.DEFAULT,
-    /** UI-023: the home screen widget's text and ideal line. */
+    /** UI-023: the home screen widget's text, ideal line, background and cup fill. */
     val widget: WidgetSettings = WidgetSettings(),
 ) {
     /** GOAL-004, GOAL-005: computed, never stored. */
@@ -91,6 +91,8 @@ class SettingsStore(context: Context) {
         val REMINDER_INTERVAL = intPreferencesKey("reminder_interval_minutes")
         val WIDGET_TEXT = stringPreferencesKey("widget_text")
         val WIDGET_IDEAL_LINE = booleanPreferencesKey("widget_ideal_line")
+        val WIDGET_BACKGROUND = booleanPreferencesKey("widget_background")
+        val WIDGET_CUP_FILL = booleanPreferencesKey("widget_cup_fill")
     }
 
     private fun Preferences.toSettings(): UserSettings {
@@ -118,6 +120,8 @@ class SettingsStore(context: Context) {
             widget = WidgetSettings(
                 text = enumOr(this[Keys.WIDGET_TEXT], defaults.widget.text),
                 idealLine = this[Keys.WIDGET_IDEAL_LINE] ?: defaults.widget.idealLine,
+                background = this[Keys.WIDGET_BACKGROUND] ?: defaults.widget.background,
+                cupFill = this[Keys.WIDGET_CUP_FILL] ?: defaults.widget.cupFill,
             ),
         )
     }
@@ -138,6 +142,8 @@ class SettingsStore(context: Context) {
         this[Keys.REMINDER_INTERVAL] = settings.reminders.intervalMinutes
         this[Keys.WIDGET_TEXT] = settings.widget.text.name
         this[Keys.WIDGET_IDEAL_LINE] = settings.widget.idealLine
+        this[Keys.WIDGET_BACKGROUND] = settings.widget.background
+        this[Keys.WIDGET_CUP_FILL] = settings.widget.cupFill
     }
 
     private inline fun <reified E : Enum<E>> enumOr(name: String?, fallback: E): E =

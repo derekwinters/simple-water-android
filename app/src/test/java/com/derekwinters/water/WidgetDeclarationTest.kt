@@ -114,6 +114,37 @@ class WidgetDeclarationTest {
         }
     }
 
+    // UI-015: the cup is fitted to the widget less spacing.xs (4dp) each side, not spacing.md.
+    @Test
+    fun `the cup comes within spacing xs of the widget's edge`() {
+        val content = body(source("widget/WaterWidget.kt"), "WidgetContent")
+        assertTrue("The cup's margin is not spacing.xs.", Regex("""paddingPx\s*=\s*spacing\.xs\b""").containsMatchIn(content))
+        assertFalse("The cup's margin is still spacing.md.", Regex("""paddingPx\s*=\s*spacing\.md\b""").containsMatchIn(content))
+    }
+
+    // UI-015, background invariant: the card and its corners are drawn only while Background is on,
+    // the cup fill only while Cup fill is on, and the fill is CupGeometry's closed cup outline.
+    @Test
+    fun `the background and the cup fill follow their settings`() {
+        val content = body(source("widget/WaterWidget.kt"), "WidgetContent")
+        val cardWhen = Regex("""if\s*\(\s*cup\.background\s*\)""").find(content)
+        assertTrue("The card is not conditional on cup.background.", cardWhen != null)
+        val afterIf = content.substring(cardWhen!!.range.last)
+        for (card in listOf(".background(colors.chip)", ".cornerRadius(")) {
+            assertTrue("$card is not drawn under the Background setting.", card in afterIf)
+            assertEquals("$card is drawn more than once.", 1, content.split(card).size - 1)
+        }
+        val fill = body(source("widget/CupBitmap.kt"), "drawFill")
+        assertTrue("The cup fill is not CupGeometry.fillPath.", "CupGeometry.fillPath" in fill)
+        assertTrue("The cup fill is not bg at FILL_OPACITY.", "colors.bg.copy(alpha = CupGeometry.FILL_OPACITY" in fill)
+        val render = body(source("widget/CupBitmap.kt"), "render")
+        assertTrue("The cup fill is not under the Cup fill setting.", Regex("""if\s*\(\s*state\.cupFill\s*\)\s*drawFill\(""").containsMatchIn(render))
+        // UI-015: from the back, fill, water, ideal line, cup, text.
+        val order = listOf("drawFill(", "drawWater(", "drawIdealLine(", "drawCup(", "drawCheck(")
+        val at = order.map { render.indexOf(it) }
+        assertTrue("Drawn out of order: ${order.zip(at)}", at.all { it >= 0 } && at == at.sorted())
+    }
+
     // UI-017: a tap opens the app on home, as the reminder notification does.
     @Test
     fun `a tap opens the app on home`() {

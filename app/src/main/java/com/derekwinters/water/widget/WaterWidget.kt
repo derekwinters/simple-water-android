@@ -32,7 +32,7 @@ import com.derekwinters.water.designsystem.DesignSystemColors
 import com.derekwinters.water.designsystem.Spacing
 
 /**
- * The home screen widget (docs/spec/screens.md UI-014–023): the app's cup filling the card, the
+ * The home screen widget (docs/spec/screens.md UI-014–023): the app's cup filling the widget, the
  * water rising toward today's goal, with the ideal line and the optional text or check. The values
  * come from `WidgetCup` in `:core` (the widget invariants); `CupBitmap` draws them, since a widget
  * cannot draw paths.
@@ -58,7 +58,7 @@ class WaterWidget : GlanceAppWidget() {
     }
 }
 
-/** UI-015–017, UI-020–022: the card, the cup, and the tap that opens home. */
+/** UI-015–017, UI-020–022: the optional card, the cup, and the tap that opens home. */
 @Composable
 private fun WidgetContent(cup: CupState) {
     val context = LocalContext.current
@@ -68,11 +68,11 @@ private fun WidgetContent(cup: CupState) {
     val density = context.resources.displayMetrics.density
     // UI-021: the numeric font (DS-030).
     val typeface = ResourcesCompat.getFont(context, com.derekwinters.water.designsystem.R.font.jetbrains_mono_regular)
-    // UI-015: the cup as large as fits the card less spacing.md each side; the bitmap is the cup alone.
+    // UI-015: the cup as large as fits the widget less spacing.xs each side; the bitmap is the cup alone.
     val bitmap = CupBitmap.render(
-        cardWidthPx = size.width.value * density,
-        cardHeightPx = size.height.value * density,
-        paddingPx = spacing.md.value * density,
+        widgetWidthPx = size.width.value * density,
+        widgetHeightPx = size.height.value * density,
+        paddingPx = spacing.xs.value * density,
         state = cup,
         typeface = typeface,
         colors = colors,
@@ -81,12 +81,14 @@ private fun WidgetContent(cup: CupState) {
     val openHome = Intent(context, MainActivity::class.java)
         .setAction(MainActivity.ACTION_OPEN_HOME)
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    // UI-017: the whole widget area opens home, with or without the card.
+    val area = GlanceModifier
+        .fillMaxSize()
+        .clickable(actionStartActivity(openHome))
+    // UI-015, background invariant: with Background off, no card and no corners, only the cup.
+    val modifier = if (cup.background) area.background(colors.chip).cornerRadius(spacing.md) else area
     Box(
-        modifier = GlanceModifier
-            .fillMaxSize()
-            .background(colors.chip)
-            .cornerRadius(spacing.md)
-            .clickable(actionStartActivity(openHome)),
+        modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
         Image(
