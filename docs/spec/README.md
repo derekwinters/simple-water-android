@@ -10,7 +10,7 @@ tests reference these IDs. Change the spec before the code.
 | [logging.md](logging.md) | LOG-001 … LOG-015 | Logging drinks, quick-add sizes, today's total, delete and undo, day boundary, ideal amount |
 | [reminders.md](reminders.md) | REM-001 … REM-016 | Reminder settings, alarm scheduling, notification, permissions |
 | [history.md](history.md) | HIST-001 … HIST-006 | Week view of daily totals against the goal |
-| [screens.md](screens.md) | UI-001 … UI-019 | Screens, navigation, which layout each uses, and the home screen widget |
+| [screens.md](screens.md) | UI-001 … UI-023 | Screens, navigation, which layout each uses, and the home screen widget |
 | [design-system.md](design-system.md) | DS-001 … DS-099 | The in-app design system, ported from Interval Trainer |
 | [brand.md](brand.md) | BRAND-001 … BRAND-060 | Launcher icon, monochrome layer, notification icon, widget cup |
 

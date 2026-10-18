@@ -7,7 +7,7 @@ import org.junit.Test
 import org.w3c.dom.Element
 
 /**
- * The home screen widget's declarations and wiring (docs/spec/screens.md UI-014–019 and the widget
+ * The home screen widget's declarations and wiring (docs/spec/screens.md UI-014–023 and the widget
  * invariants; docs/spec/brand.md BRAND-056), read from the app's own files.
  */
 class WidgetDeclarationTest {
@@ -56,7 +56,7 @@ class WidgetDeclarationTest {
         assertEquals("0", provider.getAttribute("android:updatePeriodMillis"))
     }
 
-    // UI-019, BRAND-056: the picker's preview is the launcher foreground.
+    // UI-019, BRAND-056: the picker's preview is the launcher foreground, the cup at three-quarters.
     @Test
     fun `the picker preview is the launcher foreground`() {
         assertEquals("@drawable/ic_launcher_foreground", provider.getAttribute("android:previewImage"))
@@ -76,10 +76,18 @@ class WidgetDeclarationTest {
         assertEquals("false", receivers.getValue(".widget.WidgetRefreshReceiver").getAttribute("android:exported"))
     }
 
-    // Widget invariant (BRAND-056): the cup is the launcher foreground drawable, never a redrawn copy.
+    // Widget invariant (BRAND-056): the cup is drawn from CupGeometry's master path data and brand
+    // colours, never the fixed three-quarters foreground or a copy of the cup in a resource.
     @Test
-    fun `the widget draws the launcher foreground and no copy of the cup exists`() {
-        assertTrue("The widget does not draw R.drawable.ic_launcher_foreground.", "R.drawable.ic_launcher_foreground" in widgetSources)
+    fun `the widget draws the cup from CupGeometry and no copy of the cup exists`() {
+        assertTrue("The widget does not draw with CupBitmap.", "CupBitmap.render(" in widgetSources)
+        for (geometry in listOf("CupGeometry.cupPath", "CupGeometry.waterPath(", "CupGeometry.BLUE", "CupGeometry.GREY")) {
+            assertTrue("The widget does not draw $geometry.", geometry in widgetSources)
+        }
+        for (gone in listOf("R.drawable.ic_launcher_foreground", "RingBitmap")) {
+            assertFalse("The widget still uses $gone.", gone in widgetSources)
+        }
+        assertFalse("The widget hard-codes a colour (DS-052, BRAND-056).", Regex("""0x[Ff]{2}[0-9A-Fa-f]{6}""").containsMatchIn(widgetSources))
         val cup = AppModuleFiles.parse(AppModuleFiles.file("src/main/res/drawable/ic_launcher_foreground.xml"))
             .getElementsByTagName("path").elements().map { it.getAttribute("android:pathData") }
         val allowed = setOf("ic_launcher_foreground.xml", "ic_launcher_monochrome.xml")
@@ -91,16 +99,18 @@ class WidgetDeclarationTest {
             }
     }
 
-    // Widget invariant: home and the widget take their rings from `Rings`, never a second calculation.
+    // Widget invariant: home takes its rings from Rings, and the widget its cup from WidgetCup, which
+    // reads the same Rings and GoalMath values; neither works them out a second time.
     @Test
-    fun `home and the widget take their rings from Rings alone`() {
+    fun `home and the widget take their values from Rings and WidgetCup alone`() {
         val home = source("ui/home/HomeScreen.kt")
         assertTrue("Home's ring card does not use Rings.of.", "Rings.of(" in home)
-        assertTrue("The widget does not use Rings.today.", "Rings.today(" in widgetSources)
-        for ((name, text) in listOf("HomeScreen.kt" to home, "the widget" to widgetSources)) {
-            for (second in listOf("GoalMath.fraction", ".idealFraction", ".tickFractions")) {
-                assertFalse("$name works out a ring with $second instead of Rings.", second in text)
-            }
+        assertTrue("The widget does not use WidgetCup.today.", "WidgetCup.today(" in widgetSources)
+        for (second in listOf("GoalMath.fraction", ".idealFraction", ".tickFractions")) {
+            assertFalse("HomeScreen.kt works out a ring with $second instead of Rings.", second in home)
+        }
+        for (second in listOf("GoalMath.", "Rings.of(", "Rings.today(", "Pace.today(", ".idealFraction", ".tickFractions", "Units.")) {
+            assertFalse("The widget works out its cup with $second instead of WidgetCup.", second in widgetSources)
         }
     }
 

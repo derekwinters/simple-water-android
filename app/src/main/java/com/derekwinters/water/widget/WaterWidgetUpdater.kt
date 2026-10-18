@@ -10,8 +10,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.derekwinters.water.WaterApp
-import com.derekwinters.water.core.RingState
+import com.derekwinters.water.core.CupState
 import com.derekwinters.water.core.Rings
+import com.derekwinters.water.core.WidgetCup
 import com.derekwinters.water.reminders.ReminderScheduler
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -20,41 +21,42 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-/** Keeps every placed [WaterWidget] showing today's rings (docs/spec/screens.md UI-018). */
+/** Keeps every placed [WaterWidget] showing today's cup (docs/spec/screens.md UI-018). */
 object WaterWidgetUpdater {
     private const val TAG = "WaterWidgetUpdater"
     const val ACTION_MIDNIGHT = "com.derekwinters.water.action.WIDGET_MIDNIGHT"
     private const val REQUEST_MIDNIGHT = 1
 
-    internal val RINGS_KEY = stringPreferencesKey("rings")
-    internal val AT_KEY = longPreferencesKey("rings_at_millis")
+    internal val CUP_KEY = stringPreferencesKey("cup")
+    internal val AT_KEY = longPreferencesKey("cup_at_millis")
 
-    /** Rings and the moment they were computed for. */
-    data class Drawn(val atMillis: Long, val rings: RingState)
+    /** The cup and the moment it was computed for. */
+    data class Drawn(val atMillis: Long, val cup: CupState)
 
-    /** Refreshes run one at a time, so rings computed earlier never overwrite later ones. */
+    /** Refreshes run one at a time, so a cup computed earlier never overwrites a later one. */
     private val mutex = Mutex()
 
     /**
-     * UI-015: the rings now. Widget invariants: the same `Rings` function as home, for the entries
-     * of the local date of this moment, never a previous day's.
+     * UI-015, UI-020–022: the cup now. Widget invariants: from `WidgetCup`, which takes home's own
+     * ring values, for the entries of the local date of this moment, never a previous day's.
      */
     suspend fun current(app: WaterApp): Drawn {
         val settings = app.settingsStore.current()
         val zone = ZoneId.systemDefault()
         val now = ZonedDateTime.now(zone)
         val entries = app.repository.entriesOn(now.toLocalDate(), zone).first().map { it.toLoggedAmount() }
-        return Drawn(now.toInstant().toEpochMilli(), Rings.today(entries, now, settings.goalMl, settings.reminders))
+        val cup = WidgetCup.today(entries, now, settings.goalMl, settings.reminders, settings.volumeUnit, settings.widget)
+        return Drawn(now.toInstant().toEpochMilli(), cup)
     }
 
-    /** Whichever is newer: the rings computed when the session started or the last refresh's. */
-    fun newer(drawn: Drawn, storedRings: String?, storedAtMillis: Long?): RingState {
-        val stored = RingState.decode(storedRings)
-        return if (stored != null && storedAtMillis != null && storedAtMillis > drawn.atMillis) stored else drawn.rings
+    /** Whichever is newer: the cup computed when the session started or the last refresh's. */
+    fun newer(drawn: Drawn, storedCup: String?, storedAtMillis: Long?): CupState {
+        val stored = CupState.decode(storedCup)
+        return if (stored != null && storedAtMillis != null && storedAtMillis > drawn.atMillis) stored else drawn.cup
     }
 
     /**
-     * UI-018: redraws every placed widget with the rings now, and keeps the midnight refresh armed
+     * UI-018: redraws every placed widget with the cup now, and keeps the midnight refresh armed
      * while any is placed. A failure is logged, never thrown into the write that triggered it.
      */
     suspend fun refreshAll(context: Context) {
@@ -69,7 +71,7 @@ object WaterWidgetUpdater {
                 val drawn = current(app)
                 ids.forEach { id ->
                     updateAppWidgetState(app, id) { state ->
-                        state[RINGS_KEY] = drawn.rings.encode()
+                        state[CUP_KEY] = drawn.cup.encode()
                         state[AT_KEY] = drawn.atMillis
                     }
                     WaterWidget().update(app, id)

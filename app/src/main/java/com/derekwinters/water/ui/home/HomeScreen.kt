@@ -271,7 +271,7 @@ private fun ProgressCard(
     val spacing = AppTheme.spacing
     val remaining = GoalMath.remainingMl(totalMl, goalMl)
     val paceText = pace?.let { Pace.text(it, totalMl, unit, formatReminderTime) }
-    // UI-015 invariant: the same rings as the home screen widget, from the same function.
+    // Widget invariant (UI-015, UI-020): the home screen widget's water and ideal line take these values.
     val rings = Rings.of(totalMl, goalMl, pace)
     Column(
         modifier = Modifier

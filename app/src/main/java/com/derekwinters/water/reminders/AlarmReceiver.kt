@@ -30,7 +30,7 @@ class AlarmReceiver : BroadcastReceiver() {
                     ReminderScheduler.onAlarmHandled(app)
                 } finally {
                     try {
-                        // UI-018: the widget's outer ring steps at each reminder time.
+                        // UI-018: the widget's ideal line steps at each reminder time.
                         WaterWidgetUpdater.refreshAll(app)
                     } finally {
                         pending.finish()

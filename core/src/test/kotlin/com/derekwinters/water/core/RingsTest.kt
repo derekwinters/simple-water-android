@@ -135,15 +135,4 @@ class RingsTest {
         )
         assertEquals(DayWindow.endMillis(LocalDate.of(2026, 10, 25), zone), Rings.nextMidnightMillis(start))
     }
-
-    // UI-018: the rings a refresh stores read back unchanged.
-    @Test
-    fun ringsSurviveEncodingForTheWidget() {
-        val shown = Rings.today(listOf(entry(at(9), 700.0)), at(12, 30), goal, reminders)
-        assertEquals(shown, RingState.decode(shown.encode()))
-        val hidden = Rings.today(listOf(entry(at(9), 700.0)), at(12, 30), goal, reminders.copy(enabled = false))
-        assertEquals(hidden, RingState.decode(hidden.encode()))
-        assertNull(RingState.decode("not rings"))
-        assertNull(RingState.decode(null))
-    }
 }

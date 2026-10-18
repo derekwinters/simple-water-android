@@ -17,6 +17,7 @@ import com.derekwinters.water.core.Profile
 import com.derekwinters.water.core.ReminderSchedule
 import com.derekwinters.water.core.ReminderSettings
 import com.derekwinters.water.core.VolumeUnit
+import com.derekwinters.water.core.WidgetSettings
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -34,6 +35,8 @@ data class UserSettings(
     /** LOG-004: as stored; [DrinkSizes.DEFAULT] means not customised. */
     val drinkSizes: List<Double> = DrinkSizes.DEFAULT,
     val reminders: ReminderSettings = ReminderSettings.DEFAULT,
+    /** UI-023: the home screen widget's text and ideal line. */
+    val widget: WidgetSettings = WidgetSettings(),
 ) {
     /** GOAL-004, GOAL-005: computed, never stored. */
     val recommendedGoalMl: Int get() = GoalMath.recommendedGoalMl(profile)
@@ -86,6 +89,8 @@ class SettingsStore(context: Context) {
         val REMINDER_START = intPreferencesKey("reminder_start_minute")
         val REMINDER_END = intPreferencesKey("reminder_end_minute")
         val REMINDER_INTERVAL = intPreferencesKey("reminder_interval_minutes")
+        val WIDGET_TEXT = stringPreferencesKey("widget_text")
+        val WIDGET_IDEAL_LINE = booleanPreferencesKey("widget_ideal_line")
     }
 
     private fun Preferences.toSettings(): UserSettings {
@@ -110,6 +115,10 @@ class SettingsStore(context: Context) {
                 endMinute = this[Keys.REMINDER_END] ?: reminderDefaults.endMinute,
                 intervalMinutes = interval,
             ),
+            widget = WidgetSettings(
+                text = enumOr(this[Keys.WIDGET_TEXT], defaults.widget.text),
+                idealLine = this[Keys.WIDGET_IDEAL_LINE] ?: defaults.widget.idealLine,
+            ),
         )
     }
 
@@ -127,6 +136,8 @@ class SettingsStore(context: Context) {
         this[Keys.REMINDER_START] = settings.reminders.startMinute
         this[Keys.REMINDER_END] = settings.reminders.endMinute
         this[Keys.REMINDER_INTERVAL] = settings.reminders.intervalMinutes
+        this[Keys.WIDGET_TEXT] = settings.widget.text.name
+        this[Keys.WIDGET_IDEAL_LINE] = settings.widget.idealLine
     }
 
     private inline fun <reified E : Enum<E>> enumOr(name: String?, fallback: E): E =
