@@ -121,7 +121,7 @@ order (the water first, so the cup draws over its edges):
     stroke 1.26, round joins, clipped at y = 73.11 (72.48 plus half the stroke) so a low wave never dips below the
     bottom. At `f` = 0 no water is drawn;
   - the outline's bounds, including its stroke, are x 35.1–72.9 and y 31.74–78.78; this is the box
-    UI-015 scales to the card.
+    UI-015 scales to the widget.
 
   The geometry is `CupGeometry` in `:core`; `CupBitmap` draws it. The widget picker's preview
   (UI-019) is `drawable/ic_launcher_foreground.xml`, the cup at three-quarters. No drawable apart

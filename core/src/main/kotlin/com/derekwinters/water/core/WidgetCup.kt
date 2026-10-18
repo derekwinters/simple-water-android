@@ -11,10 +11,14 @@ enum class CupTextMode(val label: String) {
     AMOUNT("Amount"),
 }
 
-/** UI-023: the two widget settings and their defaults. */
+/** UI-023: the four widget settings and their defaults. */
 data class WidgetSettings(
     val text: CupTextMode = CupTextMode.NONE,
     val idealLine: Boolean = true,
+    /** UI-015: the `chip` card behind the cup; off by default. */
+    val background: Boolean = false,
+    /** UI-015: the translucent `bg` fill inside the cup; on by default. */
+    val cupFill: Boolean = true,
 )
 
 /** UI-021, UI-022: what is written in the cup. */
@@ -31,9 +35,17 @@ sealed interface CupLabel {
 
 /**
  * UI-015, UI-020–022: what the widget draws. [water] is the water's height as a fraction of full
- * (0–1); [ideal] is the ideal line's, or null when it is hidden; [goalMet] is home's "Goal met".
+ * (0–1); [ideal] is the ideal line's, or null when it is hidden; [goalMet] is home's "Goal met";
+ * [background] and [cupFill] are UI-023's settings of those names.
  */
-data class CupState(val water: Float, val ideal: Float?, val goalMet: Boolean, val label: CupLabel) {
+data class CupState(
+    val water: Float,
+    val ideal: Float?,
+    val goalMet: Boolean,
+    val label: CupLabel,
+    val background: Boolean = false,
+    val cupFill: Boolean = true,
+) {
     /** UI-018: the form the widget stores between refreshes; [decode] reads it back unchanged. */
     fun encode(): String {
         val (kind, number, unit) = when (label) {
@@ -41,8 +53,10 @@ data class CupState(val water: Float, val ideal: Float?, val goalMet: Boolean, v
             CupLabel.Check -> Triple("C", "", "")
             is CupLabel.Value -> Triple("V", label.number, label.unit ?: NO_UNIT)
         }
-        return listOf(water.toString(), ideal?.toString().orEmpty(), goalMet.toString(), kind, number, unit)
-            .joinToString(SEPARATOR)
+        return listOf(
+            water.toString(), ideal?.toString().orEmpty(), goalMet.toString(), kind, number, unit,
+            background.toString(), cupFill.toString(),
+        ).joinToString(SEPARATOR)
     }
 
     companion object {
@@ -52,7 +66,7 @@ data class CupState(val water: Float, val ideal: Float?, val goalMet: Boolean, v
         /** The cup [encode] wrote, or null for anything else. */
         fun decode(text: String?): CupState? {
             val fields = text?.split(SEPARATOR) ?: return null
-            if (fields.size != 6) return null
+            if (fields.size != 8) return null
             val water = fields[0].toFloatOrNull() ?: return null
             val ideal = if (fields[1].isEmpty()) null else fields[1].toFloatOrNull() ?: return null
             val goalMet = fields[2].toBooleanStrictOrNull() ?: return null
@@ -62,7 +76,9 @@ data class CupState(val water: Float, val ideal: Float?, val goalMet: Boolean, v
                 "V" -> CupLabel.Value(fields[4], fields[5].takeUnless { it == NO_UNIT })
                 else -> return null
             }
-            return CupState(water, ideal, goalMet, label)
+            val background = fields[6].toBooleanStrictOrNull() ?: return null
+            val cupFill = fields[7].toBooleanStrictOrNull() ?: return null
+            return CupState(water, ideal, goalMet, label, background, cupFill)
         }
     }
 }
@@ -92,6 +108,8 @@ object WidgetCup {
             ideal = rings.outerFraction.takeIf { settings.idealLine },
             goalMet = goalMet,
             label = label,
+            background = settings.background,
+            cupFill = settings.cupFill,
         )
     }
 

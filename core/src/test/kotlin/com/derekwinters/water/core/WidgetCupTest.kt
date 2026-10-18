@@ -37,11 +37,13 @@ class WidgetCupTest {
 
     private fun value(state: CupState): CupLabel.Value = state.label as CupLabel.Value
 
-    // UI-023: None by default, ideal line on by default.
+    // UI-023: None by default, ideal line on, background off and cup fill on by default.
     @Test
     fun theDefaultsAreNoTextAndTheIdealLine() {
         assertEquals(CupTextMode.NONE, WidgetSettings().text)
         assertTrue(WidgetSettings().idealLine)
+        assertFalse(WidgetSettings().background)
+        assertTrue(WidgetSettings().cupFill)
         assertEquals(listOf("None", "Percent", "Amount"), CupTextMode.entries.map { it.label })
     }
 
@@ -183,11 +185,30 @@ class WidgetCupTest {
         assertEquals(CupLabel.Value("0%", null), midnight.label)
     }
 
+    // UI-015, UI-023: the cup carries the background and cup fill settings to the widget as set.
+    @Test
+    fun theCupCarriesTheBackgroundAndCupFill() {
+        val drawn = cup(500.0, WidgetSettings())
+        assertFalse(drawn.background)
+        assertTrue(drawn.cupFill)
+        for (background in listOf(false, true)) {
+            for (cupFill in listOf(false, true)) {
+                val state = cup(500.0, WidgetSettings(background = background, cupFill = cupFill))
+                assertEquals(background, state.background)
+                assertEquals(cupFill, state.cupFill)
+                // The settings change only how the cup is drawn, never the values in it.
+                assertEquals(drawn.copy(background = background, cupFill = cupFill), state)
+            }
+        }
+    }
+
     // UI-018: what a refresh stores reads back unchanged.
     @Test
     fun theCupSurvivesEncodingForTheWidget() {
         val states = listOf(
             cup(0.0, WidgetSettings()),
+            cup(0.0, WidgetSettings(background = true, cupFill = false)),
+            cup(1100.0, WidgetSettings(text = CupTextMode.PERCENT, background = true)),
             cup(1100.0, amount),
             cup(1100.0, amount, VolumeUnit.FL_OZ),
             cup(1100.0, percent),

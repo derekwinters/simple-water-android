@@ -87,7 +87,7 @@ object CupGeometry {
     const val IDEAL_OPACITY = 0.75
     private const val IDEAL_OVERHANG = 0.6
 
-    /** BRAND-056: the cup's outline with its stroke; UI-015 scales this box to the card. */
+    /** BRAND-056: the cup's outline with its stroke; UI-015 scales this box to the widget. */
     val BOUNDS = Box(37.2 - CUP_STROKE / 2, 33.84 - CUP_STROKE / 2, 70.8 + CUP_STROKE / 2, 76.68 + CUP_STROKE / 2)
 
     /** BRAND-013, exactly. */
@@ -99,6 +99,15 @@ object CupGeometry {
         PathOp.QuadTo(66.6, 76.68, 66.936, 73.32),
         PathOp.LineTo(70.8, 33.84),
     )
+
+    /**
+     * UI-015: the cup fill, BRAND-013's outline closed straight across its top. Background
+     * invariant: it is the cup's own path, so with no background nothing is drawn outside the cup.
+     */
+    val fillPath: List<PathOp> = cupPath + PathOp.Close
+
+    /** UI-015: the cup fill is `bg` at this opacity. */
+    const val FILL_OPACITY = 0.55
 
     /** UI-015: the water's top line at [fraction] of full, clamped to 0–1. */
     fun waterTop(fraction: Double): Double = WATER_BOTTOM - FULL_HEIGHT * fraction.coerceIn(0.0, 1.0)
@@ -137,7 +146,7 @@ object CupGeometry {
         return Line(left - IDEAL_OVERHANG, right + IDEAL_OVERHANG, y)
     }
 
-    /** UI-015: the cup as large as fits in a [width] × [height] card less [padding] each side, centred. */
+    /** UI-015: the cup as large as fits in a [width] × [height] widget less [padding] each side, centred. */
     fun placement(width: Double, height: Double, padding: Double): Placement {
         val scale = minOf((width - 2 * padding) / BOUNDS.width, (height - 2 * padding) / BOUNDS.height)
             .coerceAtLeast(0.0)

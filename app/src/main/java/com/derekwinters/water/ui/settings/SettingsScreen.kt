@@ -208,6 +208,34 @@ fun SettingsScreen(
                 },
             )
         }
+        item {
+            // UI-015, UI-023.
+            StockListItem(
+                headline = "Background",
+                modifier = rowModifier,
+                trailingContent = {
+                    Toggle(
+                        checked = settings.widget.background,
+                        onCheckedChange = { on -> onUpdate { it.copy(widget = it.widget.copy(background = on)) } },
+                        contentDescription = "Background",
+                    )
+                },
+            )
+        }
+        item {
+            // UI-015, UI-023.
+            StockListItem(
+                headline = "Cup fill",
+                modifier = rowModifier,
+                trailingContent = {
+                    Toggle(
+                        checked = settings.widget.cupFill,
+                        onCheckedChange = { on -> onUpdate { it.copy(widget = it.widget.copy(cupFill = on)) } },
+                        contentDescription = "Cup fill",
+                    )
+                },
+            )
+        }
 
         item { SectionLabel("PERMISSIONS") }
         item {

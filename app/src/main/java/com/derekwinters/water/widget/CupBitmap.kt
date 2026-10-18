@@ -19,26 +19,26 @@ import kotlin.math.ceil
  * Draws the widget's cup (docs/spec/screens.md UI-015, UI-016, UI-020–022) to a bitmap, since a
  * widget cannot draw paths. Every shape, size and position is [CupGeometry]'s, in icon units; this
  * only scales them to pixels and paints them: the water and cup in the brand colours (BRAND-056),
- * the ideal line and the text in the design system's `fg`, their outline in `bg`.
+ * the ideal line and the text in the design system's `fg`, their outline and the cup fill in `bg`.
  */
 object CupBitmap {
     /** The size the number is measured at; [CupGeometry.fitText] scales it to the cup. */
     private const val REFERENCE_SIZE = 100f
 
     /**
-     * The cup for a [cardWidthPx] × [cardHeightPx] card less [paddingPx] each side (UI-015). The
-     * bitmap is the cup's bounds at that scale; the caller centres it on the card.
+     * The cup for a [widgetWidthPx] × [widgetHeightPx] widget less [paddingPx] each side (UI-015).
+     * The bitmap is the cup's bounds at that scale; the caller centres it on the widget.
      */
     fun render(
-        cardWidthPx: Float,
-        cardHeightPx: Float,
+        widgetWidthPx: Float,
+        widgetHeightPx: Float,
         paddingPx: Float,
         state: CupState,
         typeface: Typeface?,
         colors: DesignSystemColors = DesignSystemColors.Default,
     ): Bitmap {
         val bounds = CupGeometry.BOUNDS
-        val scale = CupGeometry.placement(cardWidthPx.toDouble(), cardHeightPx.toDouble(), paddingPx.toDouble()).scale
+        val scale = CupGeometry.placement(widgetWidthPx.toDouble(), widgetHeightPx.toDouble(), paddingPx.toDouble()).scale
         val width = ceil(bounds.width * scale).toInt().coerceAtLeast(1)
         val height = ceil(bounds.height * scale).toInt().coerceAtLeast(1)
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -47,6 +47,8 @@ object CupBitmap {
         canvas.scale(scale.toFloat(), scale.toFloat())
         canvas.translate(-bounds.left.toFloat(), -bounds.top.toFloat())
 
+        // UI-015: from the back, the cup fill, the water, the ideal line, the cup, the text.
+        if (state.cupFill) drawFill(canvas, colors)
         drawWater(canvas, state.water)
         state.ideal?.let { drawIdealLine(canvas, it, colors) }
         drawCup(canvas)
@@ -56,6 +58,15 @@ object CupBitmap {
             is CupLabel.Value -> drawValue(canvas, label, typeface, colors)
         }
         return bitmap
+    }
+
+    /** UI-015: the inside of the cup, its outline closed across the top, in `bg` at 55%. */
+    private fun drawFill(canvas: Canvas, colors: DesignSystemColors) {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.FILL
+            color = colors.bg.copy(alpha = CupGeometry.FILL_OPACITY.toFloat()).toArgb()
+        }
+        canvas.drawPath(CupGeometry.fillPath.toPath(), paint)
     }
 
     /** BRAND-056: BRAND-012's water at the level, clipped at the bottom. */

@@ -13,8 +13,8 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 /**
- * UI-023 (docs/spec/screens.md): the widget settings default to no text with the ideal line on,
- * and are saved and read back with the other settings (APP-003).
+ * UI-023 (docs/spec/screens.md): the widget settings default to no text, the ideal line on, the
+ * background off and the cup fill on, and are saved and read back with the other settings (APP-003).
  *
  * One test method: DataStore keeps one instance per file for the whole process, so the defaults
  * are checked before anything is written, in the same test that writes them.
@@ -30,12 +30,18 @@ class SettingsStoreTest {
     @Test
     fun widgetSettingsDefaultThenSaveAndRestore() = runBlocking {
         val before = SettingsStore(context).current()
-        assertEquals(WidgetSettings(text = CupTextMode.NONE, idealLine = true), before.widget)
+        assertEquals(
+            WidgetSettings(text = CupTextMode.NONE, idealLine = true, background = false, cupFill = true),
+            before.widget,
+        )
 
         for (chosen in listOf(
             WidgetSettings(text = CupTextMode.PERCENT, idealLine = true),
             WidgetSettings(text = CupTextMode.AMOUNT, idealLine = false),
             WidgetSettings(text = CupTextMode.NONE, idealLine = false),
+            WidgetSettings(background = true),
+            WidgetSettings(cupFill = false),
+            WidgetSettings(text = CupTextMode.AMOUNT, background = true, cupFill = false),
         )) {
             SettingsStore(context).update { it.copy(widget = chosen) }
             val restored = SettingsStore(context).current()
